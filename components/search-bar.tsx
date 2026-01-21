@@ -127,7 +127,7 @@ setSuggestions(data)
                <img
   src={
     anime.imgSrc
-      ? `http://localhost:8080/proxy.php?url=${anime.imgSrc}`
+      ? `https://friendly-refined-substantial-constructed.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
