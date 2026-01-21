@@ -48,7 +48,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:3001/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
+        `https://camera-dvd-military-explore.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
       );
       const data = await response.json();
       console.log(data)
@@ -75,7 +75,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `http://localhost:3001/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
+          `https://camera-dvd-military-explore.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
         )
         const data = await response.json()
         if (response.ok) {
@@ -103,7 +103,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `http://localhost:3001/getAnimeInfo?animeId=${animeId}`
+          `https://camera-dvd-military-explore.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
         )
         const data = await response.json()
                   console.log(data)
