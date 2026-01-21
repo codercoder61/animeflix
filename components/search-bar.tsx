@@ -44,7 +44,7 @@ const searchAnime = async (query : String) => {
       try {
         
         const response = await fetch(
-          `http://localhost:3001/search?q=${query}`
+          `https://camera-dvd-military-explore.trycloudflare.com/search?q=${query}`
         )
         const data = await response.json()
         if (response.ok) {
