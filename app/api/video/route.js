@@ -6,27 +6,26 @@ export async function GET(req) {
     return new Response('No URL provided', { status: 400 });
   }
 
-  try {
-    const decodedUrl = decodeURIComponent(url);
+  const decodedUrl = decodeURIComponent(url);
 
-    // Native fetch works on the server in Next.js App Router
-    const response = await fetch(decodedUrl);
+  // Forward Range header if present
+  const range = req.headers.get('range');
 
-    if (!response.ok) {
-      return new Response('Failed to fetch video', { status: 500 });
-    }
+  const response = await fetch(decodedUrl, {
+    headers: range ? { range } : {},
+  });
 
-    // Stream the response directly to the client
-    const body = response.body;
-
-    return new Response(body, {
-      headers: {
-        'Content-Type': 'video/mp4',
-        'Accept-Ranges': 'bytes',
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    return new Response('Error fetching video', { status: 500 });
+  if (!response.ok && response.status !== 206) {
+    return new Response('Failed to fetch video', { status: response.status });
   }
+
+  const headers = new Headers(response.headers);
+
+  // Ensure correct content-type
+  headers.set('Content-Type', 'video/mp4');
+
+  return new Response(response.body, {
+    status: response.status, // 200 or 206
+    headers,
+  });
 }
