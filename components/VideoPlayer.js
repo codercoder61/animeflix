@@ -14,12 +14,12 @@ export default function VideoPlayer({ url }) {
         controls: true,
         autoplay: false,
         preload: 'auto',
-        responsive: true,
-        fluid: true,
+        fluid: true,           // responsive player
+        aspectRatio: '16:9',   // 👈 important
         sources: [
           {
             src: url,
-            type: 'video/mp4', // change if needed
+            type: 'video/mp4',
           },
         ],
       });
@@ -34,12 +34,20 @@ export default function VideoPlayer({ url }) {
   }, [url]);
 
   return (
-    
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '100%',
+        backgroundColor: '#000',
+        overflow: 'hidden', // 👈 prevents bleed
+      }}
+    >
       <div data-vjs-player>
         <video
           ref={videoRef}
-          className="video-js vjs-big-play-centered"
+          className="video-js vjs-default-skin vjs-big-play-centered"
         />
       </div>
+    </div>
   );
 }
