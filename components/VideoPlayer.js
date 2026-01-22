@@ -34,13 +34,12 @@ export default function VideoPlayer({ url }) {
   }, [url]);
 
   return (
-    <div style={{ width: '100%', height: '100%', backgroundColor: '#000' }}>
+    
       <div data-vjs-player>
         <video
           ref={videoRef}
           className="video-js vjs-big-play-centered"
         />
       </div>
-    </div>
   );
 }
