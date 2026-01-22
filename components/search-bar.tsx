@@ -49,7 +49,6 @@ const searchAnime = async (query : String) => {
         const data = await response.json()
         if (response.ok) {
           // Append new episodes if loading more, otherwise replace
-          console.log(data)
 setSuggestions(data)
 
         }
