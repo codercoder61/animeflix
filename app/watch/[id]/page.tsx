@@ -80,7 +80,6 @@ const fetchEpisodeSource = async (number=1) => {
         const data = await response.json()
         if (response.ok) {
           // Append new episodes if loading more, otherwise replace
-          console.log(data)
           const encodedUrl = encodeURIComponent(data.episodeSrc);
 
           setUrl(`/api/video?url=${encodedUrl}`)
@@ -106,7 +105,6 @@ const fetchEpisodeSource = async (number=1) => {
           `https://offices-startup-airfare-steam.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
         )
         const data = await response.json()
-                  console.log(data)
                   setDesc(data.animeInfo.desc)
                   setTitle(data.animeInfo.title)
 
