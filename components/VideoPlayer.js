@@ -44,11 +44,11 @@ export default function VideoPlayer({ url }) {
 
   // Spinner styles
   const overlayStyle = {
-    position: 'absolute' as const,
+    position: 'absolute',
     inset: 0,
     backgroundColor: 'rgba(0,0,0,0.6)',
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
