@@ -51,7 +51,6 @@ export default function WatchPage() {
         `https://offices-startup-airfare-steam.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
       );
       const data = await response.json();
-      console.log(data)
       if (response.ok) {
         // Replace episodes on first page, append on load more
         if (currentPage === 1) {
