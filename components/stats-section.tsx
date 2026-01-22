@@ -32,7 +32,7 @@ export default function StatsSection() {
       },
       {
         label: 'Average Rating',
-        value: 48,
+        value: 4.8,
         icon: <Star size={32} />,
         suffix: '/5',
       },
