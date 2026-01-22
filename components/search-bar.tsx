@@ -40,33 +40,34 @@ export default function SearchBar() {
   const [suggestions, setSuggestions] = useState<typeof animeData>([])
   const [isOpen, setIsOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
-const searchAnime = async (query : String) => {
-      try {
-        
-        const response = await fetch(
-          `https://offices-startup-airfare-steam.trycloudflare.com/search?q=${query}`
-        )
-        const data = await response.json()
-        if (response.ok) {
-          // Append new episodes if loading more, otherwise replace
-setSuggestions(data)
+const searchAnime = async (query: string) => {
+  try {
+    const response = await fetch(
+      `https://offices-startup-airfare-steam.trycloudflare.com/search?q=${query}`
+    );
+    const data = await response.json();
 
-        }
-      } catch (error) {
-        console.log('[v0] Error fetching episode source:', error)
-      } finally {
-      }
+    if (response.ok) {
+      setSuggestions(data);
+      setIsOpen(data.length > 0); // update immediately based on new data
     }
-  useEffect(() => {
-    if (query.trim() === '') {
-      setSuggestions([])
-      setIsOpen(false)
-      return
-    }
-    searchAnime(query)
-    
-    setIsOpen(suggestions.length > 0)
-  }, [query])
+  } catch (error) {
+    console.log('[v0] Error fetching episode source:', error);
+    setSuggestions([]);
+    setIsOpen(false);
+  }
+};
+
+useEffect(() => {
+  if (query.trim() === '') {
+    setSuggestions([]);
+    setIsOpen(false);
+    return;
+  }
+
+  searchAnime(query);
+}, [query]);
+
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
