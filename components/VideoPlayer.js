@@ -1,25 +1,59 @@
-'use client';
+'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
+import { useEffect, useRef, useState } from 'react'
+import videojs from 'video.js'
+import 'video.js/dist/video-js.css'
 
-export default function VideoPlayer({ url }) {
-  const videoRef = useRef(null);
-  const playerRef = useRef(null);
-  const [loading, setLoading] = useState(true);
+export default function VideoPlayer({ url }: { url: string }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const playerRef = useRef<videojs.Player | null>(null)
+  const [loading, setLoading] = useState(true)
 
+  // Initialize Video.js once
+  useEffect(() => {
+    if (!videoRef.current) return
+
+    playerRef.current = videojs(videoRef.current, {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      fluid: true,
+      aspectRatio: '16:9',
+    })
+
+    const player = playerRef.current
+    player.on('waiting', () => setLoading(true))
+    player.on('canplay', () => setLoading(false))
+    player.on('playing', () => setLoading(false))
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.dispose()
+        playerRef.current = null
+      }
+    }
+  }, [])
+
+  // Update source whenever URL changes
+  useEffect(() => {
+    if (playerRef.current && url) {
+      playerRef.current.src({ src: url, type: 'video/mp4' })
+      setLoading(true)
+    }
+  }, [url])
+
+  // Spinner styles
   const overlayStyle = {
-    position: 'absolute',
+    position: 'absolute' as const,
     inset: 0,
     backgroundColor: 'rgba(0,0,0,0.6)',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
     zIndex: 10,
-  };
+  }
 
   const spinnerStyle = {
     width: 40,
@@ -28,57 +62,10 @@ export default function VideoPlayer({ url }) {
     borderTop: '4px solid #fff',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
-  };
-
-  useEffect(() => {
-    if (!url) return;
-
-    const initPlayer = () => {
-      if (!videoRef.current || !document.body.contains(videoRef.current)) {
-        requestAnimationFrame(initPlayer);
-        return;
-      }
-
-      if (!playerRef.current) {
-        playerRef.current = videojs(videoRef.current, {
-          controls: true,
-          autoplay: false,
-          preload: 'auto',
-          fluid: true,
-          aspectRatio: '16:9',
-        });
-
-        const player = playerRef.current;
-
-        player.on('waiting', () => setLoading(true));
-        player.on('canplay', () => setLoading(false));
-        player.on('playing', () => setLoading(false));
-      }
-
-      // 🔁 Update source safely
-      playerRef.current.src({ src: url, type: 'video/mp4' });
-      setLoading(true);
-    };
-
-    initPlayer();
-
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.dispose();
-        playerRef.current = null;
-      }
-    };
-  }, [url]);
+  }
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        backgroundColor: '#000',
-        overflow: 'hidden',
-      }}
-    >
+    <div style={{ position: 'relative', width: '100%', backgroundColor: '#000', overflow: 'hidden' }}>
       {loading && (
         <div style={overlayStyle}>
           <div style={spinnerStyle} />
@@ -87,11 +74,8 @@ export default function VideoPlayer({ url }) {
       )}
 
       <div data-vjs-player>
-        <video
-          ref={videoRef}
-          className="video-js vjs-big-play-centered"
-        />
+        <video ref={videoRef} className="video-js vjs-big-play-centered" />
       </div>
     </div>
-  );
+  )
 }
