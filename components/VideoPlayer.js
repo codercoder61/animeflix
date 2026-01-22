@@ -79,4 +79,19 @@ export default function VideoPlayer({ url }) {
         overflow: 'hidden',
       }}
     >
-      {l
+      {loading && (
+        <div style={overlayStyle}>
+          <div style={spinnerStyle} />
+          <span style={{ marginTop: 12 }}>Loading video…</span>
+        </div>
+      )}
+
+      <div data-vjs-player>
+        <video
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+        />
+      </div>
+    </div>
+  );
+}
