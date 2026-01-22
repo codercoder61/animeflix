@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-export default function VideoPlayer({ url }: { url: string }) {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const playerRef = useRef<videojs.Player | null>(null)
+export default function VideoPlayer({ url }) {
+  const videoRef = useRef(null)
+  const playerRef = useRef(null)
   const [loading, setLoading] = useState(true)
 
   // Initialize Video.js once
