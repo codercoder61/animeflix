@@ -68,7 +68,6 @@ export default function VideoPlayer({ url }) {
     <div style={{ position: 'relative', width: '100%', backgroundColor: '#000', overflow: 'hidden' }}>
       {loading && (
         <div style={overlayStyle}>
-          <div style={spinnerStyle} />
           <span style={{ marginTop: 12 }}>Loading video…</span>
         </div>
       )}
