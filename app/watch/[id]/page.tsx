@@ -48,7 +48,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://offices-startup-airfare-steam.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
+        `https://cricket-theory-excited-frederick.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
       );
       const data = await response.json();
       if (response.ok) {
@@ -74,7 +74,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://offices-startup-airfare-steam.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
+          `https://cricket-theory-excited-frederick.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
         )
         const data = await response.json()
         if (response.ok) {
@@ -101,7 +101,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://offices-startup-airfare-steam.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
+          `https://cricket-theory-excited-frederick.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
         )
         const data = await response.json()
                   setDesc(data.animeInfo.desc)
