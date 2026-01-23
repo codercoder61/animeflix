@@ -64,45 +64,44 @@ export default function Home() {
       {/* Carousel Section */}
       <section className="relative w-full h-[500px] overflow-hidden rounded-lg mx-auto max-w-6xl mt-8 px-4 lg:px-0">
         <div className="relative w-full h-full">
-          {animeData.map((anime, index) => (
-            <div
-              key={anime.id}
-              className={`absolute w-full h-full transition-opacity duration-700 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <Image
-  src={anime.image || "/placeholder.svg"}
-  alt={anime.title}
-  fill
-  priority={index === 0}
-  className="object-cover"
-/>
+         {animeData.map((anime, index) => (
+  <div
+    key={anime.id}
+    className={`absolute inset-0 transition-opacity duration-700 ${
+      index === currentSlide
+        ? 'opacity-100 pointer-events-auto z-10'
+        : 'opacity-0 pointer-events-none z-0'
+    }`}
+  >
+    <Image
+      src={anime.image}
+      alt={anime.title}
+      fill
+      priority={index === 0}
+      className="object-cover"
+    />
 
-              <div className={`absolute inset-0 transition-opacity duration-700 ${
-    index === currentSlide
-      ? 'opacity-100 pointer-events-auto z-10'
-      : 'opacity-0 pointer-events-none z-0'
-  }`} />
-              
-              {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
-                <h2 className="text-4xl lg:text-5xl font-bold text-balance mb-2 text-primary">
-                  {anime.title}
-                </h2>
-                <p className="text-lg text-gray-200 mb-6 max-w-2xl text-balance">
-                  {anime.description}
-                </p>
-                <Link
-                  href={`/watch/${anime.id}`}
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-                >
-                  <Play size={20} />
-                  Watch Episodes
-                </Link>
-              </div>
-            </div>
-          ))}
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+
+    <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
+      <h2 className="text-4xl lg:text-5xl font-bold mb-2 text-primary">
+        {anime.title}
+      </h2>
+      <p className="text-lg text-gray-200 mb-6 max-w-2xl">
+        {anime.description}
+      </p>
+
+      <Link
+        href={`/watch/${anime.id}`}
+        className="inline-flex items-center gap-2 bg-primary px-6 py-3 rounded-lg font-semibold"
+      >
+        <Play size={20} />
+        Watch Episodes
+      </Link>
+    </div>
+  </div>
+))}
+
         </div>
 
         {/* Navigation Buttons */}
