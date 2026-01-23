@@ -159,7 +159,7 @@ export default function Home() {
       <section className="mt-16 px-4 lg:px-0 max-w-6xl mx-auto w-full mb-16">
         <h2 className="text-3xl font-bold mb-8">Featured Anime</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {animeData.map((anime) => (
+          {animeData.map((anime,index) => (
             <Link
               key={anime.id}
               href={`/watch/${anime.id}`}
