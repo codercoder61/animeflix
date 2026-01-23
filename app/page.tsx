@@ -71,12 +71,19 @@ export default function Home() {
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img
-                src={anime.image || "/placeholder.svg"}
-                alt={anime.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+              <Image
+  src={anime.image || "/placeholder.svg"}
+  alt={anime.title}
+  fill
+  priority={index === 0}
+  className="object-cover"
+/>
+
+              <div className={`absolute inset-0 transition-opacity duration-700 ${
+    index === currentSlide
+      ? 'opacity-100 pointer-events-auto z-10'
+      : 'opacity-0 pointer-events-none z-0'
+  }`} />
               
               {/* Content Overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
@@ -159,11 +166,14 @@ export default function Home() {
               href={`/watch/${anime.id}`}
               className="group relative overflow-hidden rounded-lg h-64"
             >
-              <img
-                src={anime.image || "/placeholder.svg"}
-                alt={anime.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-              />
+              <Image
+  src={anime.image || "/placeholder.svg"}
+  alt={anime.title}
+  fill
+  priority={index === 0}
+  className="object-cover"
+/>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
