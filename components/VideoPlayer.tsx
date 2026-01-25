@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
-import '@silvermine/videojs-chromecast'
-import '@silvermine/videojs-chromecast/dist/silvermine-videojs-chromecast.css'
 
 interface VideoPlayerProps {
   url: string
@@ -20,37 +18,30 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     if (!videoRef.current || playerRef.current) return
 
     const player = videojs(videoRef.current, {
-    controls: true,
-    autoplay: false,
-    preload: 'auto',
-    fluid: true,
-    aspectRatio: '16:9',
-    controlBar: {
-      children: [
-        'playToggle',
-        'volumePanel',
-        'currentTimeDisplay',
-        'timeDivider',
-        'durationDisplay',
-        'progressControl',
-        'chromecastButton',
-        'fullscreenToggle'
-      ]
-    }
-  })
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      fluid: true,
+      aspectRatio: '16:9',
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'progressControl',
+          'chromecastButton', // plugin will add it automatically
+          'fullscreenToggle'
+        ]
+      }
+    })
 
     playerRef.current = player
 
     // ✅ Dynamically import the Silvermine Chromecast plugin
-    import('@silvermine/videojs-chromecast').then((module) => {
-      import('@silvermine/videojs-chromecast/dist/silvermine-videojs-chromecast.css')
-      // Register plugin manually
-      player.chromecast = module.default
-      player.chromecast({}) // now works
-      const controlBar = player.getChild('controlBar')
-      if (controlBar && !controlBar.getChild('chromecastButton')) {
-        controlBar.addChild('chromecastButton', {})
-      }
+    import('@silvermine/videojs-chromecast').then(() => {
+      console.log('Chromecast plugin loaded')
     })
 
     const onWaiting = () => setLoading(true)
