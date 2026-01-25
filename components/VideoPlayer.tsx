@@ -12,17 +12,10 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const playerRef = useRef<videojs.Player | null>(null)
   const [loading, setLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
   const prevUrlRef = useRef<string | null>(null)
 
-  // Mark component as mounted
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Initialize Video.js player
-  useEffect(() => {
-    if (!mounted || !videoRef.current || playerRef.current) return
+    if (!videoRef.current || playerRef.current) return
 
     const player = videojs(videoRef.current, {
       controls: true,
@@ -45,8 +38,8 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
 
     playerRef.current = player
 
-    // Load Chromecast plugin dynamically (client-side only)
-    import('videojs-chromecast').then(() => {
+    // ✅ Dynamically import the Silvermine Chromecast plugin
+    import('@silvermine/videojs-chromecast').then(() => {
       player.chromecast({}) // initialize plugin
       const controlBar = player.getChild('controlBar')
       if (controlBar && !controlBar.getChild('chromecastButton')) {
@@ -54,7 +47,6 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
       }
     })
 
-    // Loading overlay handlers
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
     const onPlaying = () => setLoading(false)
@@ -70,9 +62,8 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
       player.dispose()
       playerRef.current = null
     }
-  }, [mounted])
+  }, [])
 
-  // Update video source when URL changes
   useEffect(() => {
     const player = playerRef.current
     if (!player || !url) return
@@ -85,23 +76,20 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     }
   }, [url])
 
-  const overlayStyle = {
-    position: 'absolute',
-    inset: 0,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#fff',
-    zIndex: 10
-  }
-
   return (
     <div style={{ position: 'relative', width: '100%', backgroundColor: '#000', overflow: 'hidden' }}>
       {loading && (
-        <div style={overlayStyle}>
-          <span style={{ marginTop: 12 }}>Loading video…</span>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          zIndex: 10
+        }}>
+          <span>Loading video…</span>
         </div>
       )}
 
