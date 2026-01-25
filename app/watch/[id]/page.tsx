@@ -225,7 +225,7 @@ const fetchEpisodeSource = async (number=1) => {
       Previous
     </button>
 
-    {getPaginationRange(totalEpisodes, currentPage).map((page, idx) =>
+    {getPaginationRange(totalPages, currentPage).map((page, idx) =>
   page === '...' ? (
     <span key={`ellipsis-${idx}`} className="px-3 py-1">
       …
