@@ -48,15 +48,7 @@ const getPaginationRange = (
   return pages.filter((item, index, self) => self.indexOf(item) === index)
 }
 
-interface PaginationData {
-  currentPage: number
-  limit: number
-  totalEpisodes: number
-  totalPages: number
-  hasMore: boolean
-  startIndex: number
-  endIndex: number
-}
+
 
 export default function WatchPage() {
   const params = useParams()
@@ -215,7 +207,7 @@ const fetchEpisodeSource = async (number=1) => {
               </div>
             </>)}
               
-{episodes.length > 0 && totalEpisodes > 1 && (
+{episodes.length > 0 && totalPages > 1 && (
   <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
     <button
       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
