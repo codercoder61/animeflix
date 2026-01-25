@@ -19,6 +19,34 @@ interface Episode {
   releaseDate: string
 }
 
+const getPaginationRange = (
+  totalPages: number,
+  currentPage: number,
+  maxVisible = 5
+) => {
+  const half = Math.floor(maxVisible / 2)
+  let start = Math.max(currentPage - half, 1)
+  let end = Math.min(start + maxVisible - 1, totalPages)
+
+  // Adjust start if end is at the max
+  start = Math.max(end - maxVisible + 1, 1)
+
+  const pages: (number | '...')[] = []
+
+  if (start > 1) pages.push(1)
+  if (start > 2) pages.push('...')
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+
+  if (end < totalPages - 1) pages.push('...')
+  if (end < totalPages) pages.push(totalPages)
+
+  // Remove duplicates
+  return pages.filter((item, index, self) => self.indexOf(item) === index)
+}
+
 interface PaginationData {
   currentPage: number
   limit: number
@@ -187,7 +215,7 @@ const fetchEpisodeSource = async (number=1) => {
               </div>
 
               {/* Load More Button */}
-              {pagination && pagination.hasMore && (
+              {/* {pagination && pagination.hasMore && (
   <div className="text-center">
     <p className="text-muted-foreground mb-3 text-sm">
       Showing {pagination.startIndex}-{pagination.endIndex} of {pagination.totalEpisodes} episodes
@@ -217,8 +245,47 @@ const fetchEpisodeSource = async (number=1) => {
               )}
             </>
           )}
-        </div>
+        </div> */}
+{episodes.length > 0 && totalPages > 1 && (
+  <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
+    <button
+      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-3 py-1 rounded bg-muted hover:bg-muted/80 disabled:opacity-50"
+    >
+      Previous
+    </button>
 
+    {getPaginationRange(totalPages, currentPage).map((page, idx) =>
+  page === '...' ? (
+    <span key={`ellipsis-${idx}`} className="px-3 py-1">
+      …
+    </span>
+  ) : (
+    <button
+      key={`page-${page}`}
+      onClick={() => setCurrentPage(page as number)}
+      className={`px-3 py-1 rounded transition-colors ${
+        currentPage === page
+          ? 'bg-primary text-primary-foreground'
+          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+      }`}
+    >
+      {page}
+    </button>
+  )
+)}
+
+
+    <button
+      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 rounded bg-muted hover:bg-muted/80 disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+)}
         {/* Episodes List View */}
         
       </main>
