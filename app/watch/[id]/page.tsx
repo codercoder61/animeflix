@@ -196,7 +196,7 @@ const fetchEpisodeSource = async (number=1) => {
                   .map((episode,index) => (
                   <button
                     key={(currentPage - 1) * episodesPerPage + index}
-                    onClick={() => {fetchEpisodeSource(index+1);setSelectedEpisode(index+1)}}
+                    onClick={() => {fetchEpisodeSource(episode.animeIdx);setSelectedEpisode(episode.animeIdx)}}
                     className={`aspect-square rounded-lg font-bold text-xs transition-all ${
                       selectedEpisode === (currentPage - 1) * episodesPerPage + index + 1
                         ? 'bg-primary text-primary-foreground ring-1 ring-offset-1 ring-offset-background ring-primary'
