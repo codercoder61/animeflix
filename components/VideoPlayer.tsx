@@ -18,24 +18,26 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     if (!videoRef.current || playerRef.current) return
 
     const player = videojs(videoRef.current, {
-      controls: true,
-      autoplay: false,
-      preload: 'auto',
-      fluid: true,
-      aspectRatio: '16:9',
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'chromecastButton', // plugin will add it automatically
-          'fullscreenToggle'
-        ]
-      }
-    })
+  controls: true,
+  fluid: true,
+  techOrder: ['chromecast', 'html5'],
+  chromecast: {
+    appId: 'CC1AD845' // Default Media Receiver
+  },
+  controlBar: {
+    children: [
+      'playToggle',
+      'volumePanel',
+      'currentTimeDisplay',
+      'timeDivider',
+      'durationDisplay',
+      'progressControl',
+      'chromecastButton',
+      'fullscreenToggle'
+    ]
+  }
+})
+
 
     playerRef.current = player
 
