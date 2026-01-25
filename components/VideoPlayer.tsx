@@ -16,7 +16,9 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
 
   useEffect(() => {
     if (!videoRef.current || playerRef.current) return
-
+import('@silvermine/videojs-chromecast').then(() => {
+      console.log('Chromecast plugin loaded')
+    })
     const player = videojs(videoRef.current, {
   controls: true,
   fluid: true,
@@ -42,9 +44,7 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     playerRef.current = player
 
     // ✅ Dynamically import the Silvermine Chromecast plugin
-    import('@silvermine/videojs-chromecast').then(() => {
-      console.log('Chromecast plugin loaded')
-    })
+    
 
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
