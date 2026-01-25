@@ -256,7 +256,11 @@ const fetchEpisodeSource = async (number=1) => {
       Next
     </button>
   </div>
-)}</div>
+)}
+
+
+            
+        </div>
       </main>
 
       <Footer />
