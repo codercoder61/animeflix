@@ -70,7 +70,7 @@ export default function WatchPage() {
   const [title, setTitle] = useState("")
   const [url, setUrl] = useState("")
   const episodesPerPage = 12 // how many episodes per page
-  const [totalEpisodes, setTotalEpisodes] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   // Fetch episodes on component mount and when page changes
   useEffect(() => {
   const fetchEpisodes = async () => {
@@ -83,9 +83,9 @@ export default function WatchPage() {
       if (response.ok) {
         // Replace episodes on first page, append on load more
         setEpisodes(data.episodes);
-        let totalPages = Math.ceil(episodes.length / episodesPerPage)
+        let totalPages = Math.ceil(data.episodes.length / episodesPerPage)
 
-        setTotalEpisodes(totalPages)
+        setTotalPages(totalPages)
         
       }
     } catch (error) {
