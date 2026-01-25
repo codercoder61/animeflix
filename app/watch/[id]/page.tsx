@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://writing-mem-committees-butter.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}&limit=12`
+        `https://writing-mem-committees-butter.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -191,7 +191,9 @@ const fetchEpisodeSource = async (number=1) => {
             <>
               {/* Episode Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4">
-                {episodes.map((episode,index) => (
+                {episodes
+                  .slice((currentPage - 1) * episodesPerPage, currentPage * episodesPerPage)
+                  .map((episode,index) => (
                   <button
                     key={index}
                     onClick={() => {fetchEpisodeSource(index+1);setSelectedEpisode(index+1)}}
