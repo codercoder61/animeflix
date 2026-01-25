@@ -19,17 +19,19 @@ useEffect(() => {
 
  
     const player = videojs(videoRef.current!, {
-      controls: true,
-      fluid: true,
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'progressControl',
-          'fullscreenToggle'
-        ]
-      }
-    })
+  controls: true,
+  fluid: false,
+  responsive: true,
+  aspectRatio: '16:9',
+  controlBar: {
+    children: [
+      'playToggle',
+      'volumePanel',
+      'progressControl',
+      'fullscreenToggle'
+    ]
+  }
+})
 
     playerRef.current = player
 
@@ -66,18 +68,20 @@ useEffect(() => {
   }, [url])
 
   return (
-  <div
-    style={{
-      position: 'relative',
-      width: '100%',
-      height: '100vh',          // or any fixed height
-      backgroundColor: '#000',
-      display: 'flex',
-      alignItems: 'center',     // ✅ vertical centering
-      justifyContent: 'center', // optional horizontal centering
-      overflow: 'hidden'
-    }}
-  >
+
+
+        <div
+  style={{
+    position: 'relative',
+    width: '100%',
+    height: '100vh',
+    backgroundColor: '#000',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }}
+>
+          
     {loading && (
       <div style={{
         position: 'absolute',
@@ -92,13 +96,12 @@ useEffect(() => {
         <span>Loading video…</span>
       </div>
     )}
-
-    <div data-vjs-player style={{ width: '100%', maxWidth: '100%' }}>
-      <video
-        ref={videoRef}
-        className="video-js vjs-big-play-centered"
-        playsInline
-      />
-    </div>
+  <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
+    <video
+      ref={videoRef}
+      className="video-js vjs-big-play-centered"
+      playsInline
+    />
   </div>
+</div>
 )
