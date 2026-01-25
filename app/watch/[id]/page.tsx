@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -63,14 +64,13 @@ export default function WatchPage() {
   
   const [selectedEpisode, setSelectedEpisode] = useState(1)
   const [episodes, setEpisodes] = useState([])
-  const [pagination, setPagination] = useState<PaginationData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [desc, setDesc] = useState("")
   const [title, setTitle] = useState("")
   const [url, setUrl] = useState("")
   const episodesPerPage = 12 // how many episodes per page
-  let totalPages = null
+  const [totalEpisodes, setTotalEpisodes] = useState(0)
   // Fetch episodes on component mount and when page changes
   useEffect(() => {
   const fetchEpisodes = async () => {
@@ -82,13 +82,10 @@ export default function WatchPage() {
       const data = await response.json();
       if (response.ok) {
         // Replace episodes on first page, append on load more
-        if (currentPage === 1) {
-          setEpisodes(data.episodes);
-        } else {
-          setEpisodes(prev => [...prev, ...data.episodes]);
-        }
-        setPagination(data.pagination);
-        totalPages = Math.ceil(episodes.length / episodesPerPage)
+        setEpisodes(data.episodes);
+        let totalPages = Math.ceil(episodes.length / episodesPerPage)
+
+        setTotalEpisodes(totalPages)
         
       }
     } catch (error) {
@@ -218,7 +215,7 @@ const fetchEpisodeSource = async (number=1) => {
               </div>
             </>)}
               
-{episodes.length > 0 && totalPages > 1 && (
+{episodes.length > 0 && totalEpisodes > 1 && (
   <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
     <button
       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -228,7 +225,7 @@ const fetchEpisodeSource = async (number=1) => {
       Previous
     </button>
 
-    {getPaginationRange(totalPages, currentPage).map((page, idx) =>
+    {getPaginationRange(totalEpisodes, currentPage).map((page, idx) =>
   page === '...' ? (
     <span key={`ellipsis-${idx}`} className="px-3 py-1">
       …
