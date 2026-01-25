@@ -4,64 +4,83 @@ import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 
-export default function VideoPlayer({ url }) {
-  const videoRef = useRef(null)
-  const playerRef = useRef(null)
+interface VideoPlayerProps {
+  url: string
+}
+
+export default function VideoPlayer({ url }: VideoPlayerProps) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const playerRef = useRef<videojs.Player | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
-  // Initialize Video.js once
+  // Step 1: mark component as mounted
   useEffect(() => {
-    if (!videoRef.current) return
+    setMounted(true)
+  }, [])
 
-    playerRef.current = videojs(videoRef.current, {
+  // Step 2: initialize Video.js only if mounted and ref exists
+  useEffect(() => {
+    if (!mounted || !videoRef.current || playerRef.current) return
+
+    const player = videojs(videoRef.current, {
       controls: true,
       autoplay: false,
       preload: 'auto',
       fluid: true,
       aspectRatio: '16:9',
+      liveui: url?.endsWith('.m3u8') || false,
     })
+    
 
-    const player = playerRef.current
-    player.on('waiting', () => setLoading(true))
-    player.on('canplay', () => setLoading(false))
-    player.on('playing', () => setLoading(false))
+    playerRef.current = player
+
+    const onWaiting = () => setLoading(true)
+    const onCanPlay = () => setLoading(false)
+    const onPlaying = () => setLoading(false)
+
+    player.on('waiting', onWaiting)
+    player.on('canplay', onCanPlay)
+    player.on('playing', onPlaying)
 
     return () => {
-      if (playerRef.current) {
-        playerRef.current.dispose()
-        playerRef.current = null
-      }
+      player.off('waiting', onWaiting)
+      player.off('canplay', onCanPlay)
+      player.off('playing', onPlaying)
+      player.dispose()
+      playerRef.current = null
     }
-  }, [])
+  }, [mounted])
 
-  // Update source whenever URL changes
-  useEffect(() => {
-    if (playerRef.current && url) {
-      playerRef.current.src({ src: url, type: 'video/mp4' })
-      setLoading(true)
-    }
-  }, [url])
+  // Step 3: update source and tracks whenever url/tracks change
+  const prevUrlRef = useRef(null)
 
-  // Spinner styles
+useEffect(() => {
+  const player = playerRef.current
+  if (!player || !url) return
+
+  // Only change src if URL is actually different
+  if (prevUrlRef.current !== url) {
+    const type = url.endsWith('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+    player.src({ src: url, type })
+    setLoading(true)
+    prevUrlRef.current = url
+  }
+
+ 
+}, [url])
+
+
   const overlayStyle = {
     position: 'absolute',
     inset: 0,
     backgroundColor: 'rgba(0,0,0,0.6)',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
     zIndex: 10,
-  }
-
-  const spinnerStyle = {
-    width: 40,
-    height: 40,
-    border: '4px solid rgba(255,255,255,0.3)',
-    borderTop: '4px solid #fff',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
   }
 
   return (
@@ -72,8 +91,13 @@ export default function VideoPlayer({ url }) {
         </div>
       )}
 
+      {/* ✅ The wrapper with data-vjs-player */}
       <div data-vjs-player>
-        <video ref={videoRef} className="video-js vjs-big-play-centered" />
+<video
+  ref={videoRef}
+  className="video-js vjs-big-play-centered"
+  playsInline
+/>
       </div>
     </div>
   )
