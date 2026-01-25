@@ -69,6 +69,8 @@ export default function WatchPage() {
   const [desc, setDesc] = useState("")
   const [title, setTitle] = useState("")
   const [url, setUrl] = useState("")
+  const episodesPerPage = 12 // how many episodes per page
+const totalPages = Math.ceil(episodes.length / episodesPerPage)
 
   // Fetch episodes on component mount and when page changes
   useEffect(() => {
