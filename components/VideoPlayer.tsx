@@ -23,18 +23,16 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   useEffect(() => {
     if (!mounted || !videoRef.current || playerRef.current) return
 
-    const player = videojs(videoRef.current, {
+        playerRef.current = videojs(videoRef.current, {
       controls: true,
       autoplay: false,
       preload: 'auto',
       fluid: true,
       aspectRatio: '16:9',
-      liveui: url?.endsWith('.m3u8') || false,
     })
     
 
-    playerRef.current = player
-
+    const player = playerRef.current
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
     const onPlaying = () => setLoading(false)
