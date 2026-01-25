@@ -22,26 +22,25 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   import('@silvermine/videojs-chromecast').then(() => {
     console.log('Chromecast plugin loaded')
 
-    player = videojs(videoRef.current!, {
-      controls: true,
-      fluid: true,
-      techOrder: ['chromecast', 'html5'],
-      chromecast: {
-        appId: 'CC1AD845' // Default Media Receiver
-      },
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'chromecastButton',
-          'fullscreenToggle'
-        ]
-      }
-    })
+    const player = videojs(videoRef.current!, {
+  controls: true,
+  fluid: true,
+  chromecast: {
+    appId: 'CC1AD845'
+  },
+  controlBar: {
+    children: [
+      'playToggle',
+      'volumePanel',
+      'currentTimeDisplay',
+      'timeDivider',
+      'durationDisplay',
+      'progressControl',
+      'chromecastButton',
+      'fullscreenToggle'
+    ]
+  }
+})
 
     playerRef.current = player
 
