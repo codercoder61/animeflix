@@ -14,43 +14,36 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   const [loading, setLoading] = useState(true)
   const prevUrlRef = useRef<string | null>(null)
 
-  useEffect(() => {
+useEffect(() => {
   if (!videoRef.current || playerRef.current) return
 
   let player: videojs.Player
 
   import('@silvermine/videojs-chromecast').then(() => {
-    console.log('Chromecast plugin loaded')
+    player = videojs(videoRef.current!, {
+      controls: true,
+      fluid: true,
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'progressControl',
+          'chromecastButton',
+          'fullscreenToggle'
+        ]
+      },
+      chromecast: {
+        appId: 'CC1AD845'
+      }
+    })
 
-    const player = videojs(videoRef.current!, {
-  controls: true,
-  fluid: true,
-  chromecast: {
-    appId: 'CC1AD845'
-  },
-  controlBar: {
-    children: [
-      'playToggle',
-      'volumePanel',
-      'currentTimeDisplay',
-      'timeDivider',
-      'durationDisplay',
-      'progressControl',
-      'chromecastButton',
-      'fullscreenToggle'
-    ]
-  }
-})
+    // 🔑 THIS IS CRITICAL
+    player.chromecast()
 
     playerRef.current = player
-
-    const onWaiting = () => setLoading(true)
-    const onCanPlay = () => setLoading(false)
-    const onPlaying = () => setLoading(false)
-
-    player.on('waiting', onWaiting)
-    player.on('canplay', onCanPlay)
-    player.on('playing', onPlaying)
   })
 
   return () => {
@@ -60,6 +53,7 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     }
   }
 }, [])
+
 
   useEffect(() => {
     const player = playerRef.current
