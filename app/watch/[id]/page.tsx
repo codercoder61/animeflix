@@ -216,38 +216,7 @@ const fetchEpisodeSource = async (number=1) => {
                 ))}
               </div>
 
-              {/* Load More Button */}
-              {/* {pagination && pagination.hasMore && (
-  <div className="text-center">
-    <p className="text-muted-foreground mb-3 text-sm">
-      Showing {pagination.startIndex}-{pagination.endIndex} of {pagination.totalEpisodes} episodes
-    </p>
-    <button
-      onClick={() => setCurrentPage(prev => prev + 1)}
-      disabled={isLoading}
-      className="bg-secondary text-secondary-foreground px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity font-semibold text-sm disabled:opacity-50 flex items-center gap-2 mx-auto"
-    >
-      {isLoading ? (
-        <>
-          <Loader size={14} className="animate-spin" />
-          Loading...
-        </>
-      ) : (
-        'Load More Episodes'
-      )}
-    </button>
-  </div>
-)}
-
-
-              {pagination && !pagination.hasMore && episodes.length > 0 && (
-                <p className="text-center text-muted-foreground text-sm py-4">
-                  All {pagination.totalEpisodes} episodes loaded
-                </p>
-              )}
-            </>
-          )}
-        </div> */}
+              
 {episodes.length > 0 && totalPages > 1 && (
   <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
     <button
@@ -288,8 +257,6 @@ const fetchEpisodeSource = async (number=1) => {
     </button>
   </div>
 )}
-        {/* Episodes List View */}
-        
       </main>
 
       <Footer />
