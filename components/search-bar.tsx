@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://final-awarded-dear-truly.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://bundle-fixes-ballot-cork.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
