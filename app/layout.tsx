@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import Script from 'next/script' // ✅ Import here
 import '../styles/globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -25,10 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html className="dark" lang="en">
       <body className={`${_geist.className} font-sans antialiased`}>
         {/* ✅ Load the Cast SDK after page is interactive */}
-        <Script
-  src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
-  strategy="afterInteractive"
-/>
+     
 
         {children}
 
