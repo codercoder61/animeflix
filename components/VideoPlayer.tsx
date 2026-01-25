@@ -15,36 +15,35 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   const prevUrlRef = useRef<string | null>(null)
 
   useEffect(() => {
-    if (!videoRef.current || playerRef.current) return
-import('@silvermine/videojs-chromecast').then(() => {
-      console.log('Chromecast plugin loaded')
-    })
-    const player = videojs(videoRef.current, {
-  controls: true,
-  fluid: true,
-  techOrder: ['chromecast', 'html5'],
-  chromecast: {
-    appId: 'CC1AD845' // Default Media Receiver
-  },
-  controlBar: {
-    children: [
-      'playToggle',
-      'volumePanel',
-      'currentTimeDisplay',
-      'timeDivider',
-      'durationDisplay',
-      'progressControl',
-      'chromecastButton',
-      'fullscreenToggle'
-    ]
-  }
-})
+  if (!videoRef.current || playerRef.current) return
 
+  let player: videojs.Player
+
+  import('@silvermine/videojs-chromecast').then(() => {
+    console.log('Chromecast plugin loaded')
+
+    player = videojs(videoRef.current!, {
+      controls: true,
+      fluid: true,
+      techOrder: ['chromecast', 'html5'],
+      chromecast: {
+        appId: 'CC1AD845' // Default Media Receiver
+      },
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'progressControl',
+          'chromecastButton',
+          'fullscreenToggle'
+        ]
+      }
+    })
 
     playerRef.current = player
-
-    // ✅ Dynamically import the Silvermine Chromecast plugin
-    
 
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
@@ -53,15 +52,15 @@ import('@silvermine/videojs-chromecast').then(() => {
     player.on('waiting', onWaiting)
     player.on('canplay', onCanPlay)
     player.on('playing', onPlaying)
+  })
 
-    return () => {
-      player.off('waiting', onWaiting)
-      player.off('canplay', onCanPlay)
-      player.off('playing', onPlaying)
-      player.dispose()
+  return () => {
+    if (playerRef.current) {
+      playerRef.current.dispose()
       playerRef.current = null
     }
-  }, [])
+  }
+}, [])
 
   useEffect(() => {
     const player = playerRef.current
