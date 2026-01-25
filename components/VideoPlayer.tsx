@@ -42,11 +42,16 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     playerRef.current = player
 
     // ✅ Dynamically import the Silvermine Chromecast plugin
-    import('@silvermine/videojs-chromecast').then(() => {
-    // ✅ Do NOT call player.chromecast()
-    // The plugin automatically registers and the button appears
-    console.log('Chromecast plugin loaded')
-  })
+    import('@silvermine/videojs-chromecast').then((module) => {
+      import('@silvermine/videojs-chromecast/dist/silvermine-videojs-chromecast.css')
+      // Register plugin manually
+      player.chromecast = module.default
+      player.chromecast({}) // now works
+      const controlBar = player.getChild('controlBar')
+      if (controlBar && !controlBar.getChild('chromecastButton')) {
+        controlBar.addChild('chromecastButton', {})
+      }
+    })
 
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
