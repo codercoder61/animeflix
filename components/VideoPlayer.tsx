@@ -20,27 +20,24 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     if (!videoRef.current || playerRef.current) return
 
     const player = videojs(videoRef.current, {
-  controls: true,
-  autoplay: false,
-  preload: 'auto',
-  fluid: true,
-  aspectRatio: '16:9',
-  plugins: {
-    chromecast: {} // ✅ Plugin initialized here
-  },
-  controlBar: {
-    children: [
-      'playToggle',
-      'volumePanel',
-      'currentTimeDisplay',
-      'timeDivider',
-      'durationDisplay',
-      'progressControl',
-      'chromecastButton', // Cast button automatically added
-      'fullscreenToggle'
-    ]
-  }
-})
+    controls: true,
+    autoplay: false,
+    preload: 'auto',
+    fluid: true,
+    aspectRatio: '16:9',
+    controlBar: {
+      children: [
+        'playToggle',
+        'volumePanel',
+        'currentTimeDisplay',
+        'timeDivider',
+        'durationDisplay',
+        'progressControl',
+        'chromecastButton',
+        'fullscreenToggle'
+      ]
+    }
+  })
 
     playerRef.current = player
 
