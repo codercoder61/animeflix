@@ -195,10 +195,10 @@ const fetchEpisodeSource = async (number=1) => {
                   .slice((currentPage - 1) * episodesPerPage, currentPage * episodesPerPage)
                   .map((episode,index) => (
                   <button
-                    key={index}
+                    key={(currentPage - 1) * episodesPerPage + index}
                     onClick={() => {fetchEpisodeSource(index+1);setSelectedEpisode(index+1)}}
                     className={`aspect-square rounded-lg font-bold text-xs transition-all ${
-                      selectedEpisode === index+1
+                      selectedEpisode === (currentPage - 1) * episodesPerPage + index + 1
                         ? 'bg-primary text-primary-foreground ring-1 ring-offset-1 ring-offset-background ring-primary'
                         : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }`}
