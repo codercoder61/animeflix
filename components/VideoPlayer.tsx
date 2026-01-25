@@ -17,19 +17,15 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
 useEffect(() => {
   if (!videoRef.current || playerRef.current) return
 
-  import('@silvermine/videojs-chromecast').then(() => {
+ 
     const player = videojs(videoRef.current!, {
       controls: true,
       fluid: true,
-      chromecast: {
-        appId: 'CC1AD845'
-      },
       controlBar: {
         children: [
           'playToggle',
           'volumePanel',
           'progressControl',
-          'chromecastButton',
           'fullscreenToggle'
         ]
       }
@@ -53,7 +49,6 @@ useEffect(() => {
       player.dispose()
       playerRef.current = null
     }
-  })
 }, [])
 
 
