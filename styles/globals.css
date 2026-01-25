@@ -5,7 +5,10 @@
     transform: rotate(360deg);
   }
 }
-
+.vjs-fluid {
+  display: flex;
+  align-items: center;
+}
 /* Entire scrollbar */
 ::-webkit-scrollbar {
   width: 12px;           /* Width for vertical scrollbar */
