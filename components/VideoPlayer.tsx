@@ -3,8 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
-import 'videojs-chromecast'
-import 'videojs-chromecast/dist/videojs-chromecast.css'
 
 interface VideoPlayerProps {
   url: string
@@ -15,42 +13,48 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   const playerRef = useRef<videojs.Player | null>(null)
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
+  const prevUrlRef = useRef<string | null>(null)
 
-  // Step 1: mark component as mounted
+  // Mark component as mounted
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Step 2: initialize Video.js only if mounted and ref exists
+  // Initialize Video.js player
   useEffect(() => {
     if (!mounted || !videoRef.current || playerRef.current) return
 
-        playerRef.current = videojs(videoRef.current, {
-  controls: true,
-  autoplay: false,
-  preload: 'auto',
-  fluid: true,
-  aspectRatio: '16:9',
-  plugins: {
-    chromecast: {}
-  },
-  controlBar: {
-    children: [
-      'playToggle',
-      'volumePanel',
-      'currentTimeDisplay',
-      'timeDivider',
-      'durationDisplay',
-      'progressControl',
-      'chromecastButton', // ✅ Add cast button here
-      'fullscreenToggle'
-    ]
-  }
-})
+    const player = videojs(videoRef.current, {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      fluid: true,
+      aspectRatio: '16:9',
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'currentTimeDisplay',
+          'timeDivider',
+          'durationDisplay',
+          'progressControl',
+          'fullscreenToggle'
+        ]
+      }
+    })
 
-    
+    playerRef.current = player
 
-    const player = playerRef.current
+    // Load Chromecast plugin dynamically (client-side only)
+    import('videojs-chromecast').then(() => {
+      player.chromecast({}) // initialize plugin
+      const controlBar = player.getChild('controlBar')
+      if (controlBar && !controlBar.getChild('chromecastButton')) {
+        controlBar.addChild('chromecastButton', {})
+      }
+    })
+
+    // Loading overlay handlers
     const onWaiting = () => setLoading(true)
     const onCanPlay = () => setLoading(false)
     const onPlaying = () => setLoading(false)
@@ -68,24 +72,18 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     }
   }, [mounted])
 
-  // Step 3: update source and tracks whenever url/tracks change
-  const prevUrlRef = useRef(null)
+  // Update video source when URL changes
+  useEffect(() => {
+    const player = playerRef.current
+    if (!player || !url) return
 
-useEffect(() => {
-  const player = playerRef.current
-  if (!player || !url) return
-
-  // Only change src if URL is actually different
-  if (prevUrlRef.current !== url) {
-    const type = url.endsWith('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-    player.src({ src: url, type })
-    setLoading(true)
-    prevUrlRef.current = url
-  }
-
- 
-}, [url])
-
+    if (prevUrlRef.current !== url) {
+      const type = url.endsWith('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+      player.src({ src: url, type })
+      setLoading(true)
+      prevUrlRef.current = url
+    }
+  }, [url])
 
   const overlayStyle = {
     position: 'absolute',
@@ -96,7 +94,7 @@ useEffect(() => {
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
-    zIndex: 10,
+    zIndex: 10
   }
 
   return (
@@ -107,13 +105,8 @@ useEffect(() => {
         </div>
       )}
 
-      {/* ✅ The wrapper with data-vjs-player */}
       <div data-vjs-player>
-<video
-  ref={videoRef}
-  className="video-js vjs-big-play-centered"
-  playsInline
-/>
+        <video ref={videoRef} className="video-js vjs-big-play-centered" playsInline />
       </div>
     </div>
   )
