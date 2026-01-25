@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://friendly-refined-substantial-constructed.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://final-awarded-dear-truly.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
