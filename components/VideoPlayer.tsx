@@ -66,25 +66,39 @@ useEffect(() => {
   }, [url])
 
   return (
-    <div style={{ position: 'relative', width: '100%', backgroundColor: '#000', overflow: 'hidden' }}>
-      {loading && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          zIndex: 10
-        }}>
-          <span>Loading video…</span>
-        </div>
-      )}
-
-      <div data-vjs-player>
-        <video ref={videoRef} className="video-js vjs-big-play-centered" playsInline />
+  <div
+    style={{
+      position: 'relative',
+      width: '100%',
+      height: '100vh',          // or any fixed height
+      backgroundColor: '#000',
+      display: 'flex',
+      alignItems: 'center',     // ✅ vertical centering
+      justifyContent: 'center', // optional horizontal centering
+      overflow: 'hidden'
+    }}
+  >
+    {loading && (
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#fff',
+        zIndex: 10
+      }}>
+        <span>Loading video…</span>
       </div>
+    )}
+
+    <div data-vjs-player style={{ width: '100%', maxWidth: '100%' }}>
+      <video
+        ref={videoRef}
+        className="video-js vjs-big-play-centered"
+        playsInline
+      />
     </div>
-  )
-}
+  </div>
+)
