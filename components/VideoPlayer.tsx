@@ -17,37 +17,45 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
 useEffect(() => {
   if (!videoRef.current || playerRef.current) return
 
-  let player: videojs.Player
-
   import('@silvermine/videojs-chromecast').then(() => {
-  const player = videojs(videoRef.current!, {
-    controls: true,
-    fluid: true,
-    chromecast: {
-      appId: 'CC1AD845'
-    },
-    controlBar: {
-      children: [
-        'playToggle',
-        'volumePanel',
-        'progressControl',
-        'chromecastButton',
-        'fullscreenToggle'
-      ]
-    }
-  })
+    const player = videojs(videoRef.current!, {
+      controls: true,
+      fluid: true,
+      chromecast: {
+        appId: 'CC1AD845'
+      },
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'progressControl',
+          'chromecastButton',
+          'fullscreenToggle'
+        ]
+      }
+    })
 
-  playerRef.current = player
-})
+    playerRef.current = player
 
+    // ✅ Listen to events to hide loading overlay
+    const hideLoading = () => setLoading(false)
+    const showLoading = () => setLoading(true)
 
-  return () => {
-    if (playerRef.current) {
-      playerRef.current.dispose()
+    player.on('waiting', showLoading)
+    player.on('canplay', hideLoading)
+    player.on('playing', hideLoading)
+
+    // Clean up
+    return () => {
+      player.off('waiting', showLoading)
+      player.off('canplay', hideLoading)
+      player.off('playing', hideLoading)
+      player.dispose()
       playerRef.current = null
     }
-  }
+  })
 }, [])
+
 
 
   useEffect(() => {
