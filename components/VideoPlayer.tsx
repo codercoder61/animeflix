@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
+import 'videojs-chromecast'
+import 'videojs-chromecast/dist/videojs-chromecast.css'
 
 interface VideoPlayerProps {
   url: string
@@ -24,12 +26,28 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
     if (!mounted || !videoRef.current || playerRef.current) return
 
         playerRef.current = videojs(videoRef.current, {
-      controls: true,
-      autoplay: false,
-      preload: 'auto',
-      fluid: true,
-      aspectRatio: '16:9',
-    })
+  controls: true,
+  autoplay: false,
+  preload: 'auto',
+  fluid: true,
+  aspectRatio: '16:9',
+  plugins: {
+    chromecast: {}
+  },
+  controlBar: {
+    children: [
+      'playToggle',
+      'volumePanel',
+      'currentTimeDisplay',
+      'timeDivider',
+      'durationDisplay',
+      'progressControl',
+      'chromecastButton', // ✅ Add cast button here
+      'fullscreenToggle'
+    ]
+  }
+})
+
     
 
     const player = playerRef.current
