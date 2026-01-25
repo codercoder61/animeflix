@@ -20,31 +20,26 @@ useEffect(() => {
   let player: videojs.Player
 
   import('@silvermine/videojs-chromecast').then(() => {
-    player = videojs(videoRef.current!, {
-      controls: true,
-      fluid: true,
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'currentTimeDisplay',
-          'timeDivider',
-          'durationDisplay',
-          'progressControl',
-          'chromecastButton',
-          'fullscreenToggle'
-        ]
-      },
-      chromecast: {
-        appId: 'CC1AD845'
-      }
-    })
-
-    // 🔑 THIS IS CRITICAL
-    player.chromecast()
-
-    playerRef.current = player
+  const player = videojs(videoRef.current!, {
+    controls: true,
+    fluid: true,
+    chromecast: {
+      appId: 'CC1AD845'
+    },
+    controlBar: {
+      children: [
+        'playToggle',
+        'volumePanel',
+        'progressControl',
+        'chromecastButton',
+        'fullscreenToggle'
+      ]
+    }
   })
+
+  playerRef.current = player
+})
+
 
   return () => {
     if (playerRef.current) {
