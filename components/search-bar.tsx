@@ -43,7 +43,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string) => {
   try {
     const response = await fetch(
-      `https://cultures-posters-transcript-blowing.trycloudflare.com/search?q=${query}`
+      `https://logic-association-short-circumstances.trycloudflare.com/search?q=${query}`
     );
     const data = await response.json();
 
@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://location-ebony-possession-same.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://cookbook-entrance-logo-donor.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
