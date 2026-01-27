@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://ips-mississippi-priorities-issued.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://location-ebony-possession-same.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
