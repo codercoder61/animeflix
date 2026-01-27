@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://writing-mem-committees-butter.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
+        `https://cultures-posters-transcript-blowing.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -94,7 +94,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://writing-mem-committees-butter.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
+          `https://cultures-posters-transcript-blowing.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
         )
         const data = await response.json()
         if (response.ok) {
@@ -121,7 +121,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://writing-mem-committees-butter.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
+          `https://cultures-posters-transcript-blowing.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
         )
         const data = await response.json()
                   setDesc(data.animeInfo.desc)
