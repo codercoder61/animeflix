@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://cookbook-entrance-logo-donor.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://apartments-cedar-twist-kenneth.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
