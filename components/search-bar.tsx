@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://apartments-cedar-twist-kenneth.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://longitude-ram-homeless-cast.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
