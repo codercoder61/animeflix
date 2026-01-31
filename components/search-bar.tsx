@@ -43,7 +43,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string) => {
   try {
     const response = await fetch(
-      `https://eur-gst-demonstrate-circumstances.trycloudflare.com/search?q=${query}`
+      `https://raising-accessed-lots-similar.trycloudflare.com/search?q=${query}`
     );
     const data = await response.json();
 
