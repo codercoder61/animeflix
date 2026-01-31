@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://eur-gst-demonstrate-circumstances.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
+        `https://raising-accessed-lots-similar.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -94,7 +94,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://eur-gst-demonstrate-circumstances.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
+          `https://raising-accessed-lots-similar.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
         )
         const data = await response.json()
         if (response.ok) {
@@ -121,7 +121,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://eur-gst-demonstrate-circumstances.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
+          `https://raising-accessed-lots-similar.trycloudflare.com/getAnimeInfo?animeId=${animeId}`
         )
         const data = await response.json()
                   setDesc(data.animeInfo.desc)
