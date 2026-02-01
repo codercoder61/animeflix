@@ -43,7 +43,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string) => {
   try {
     const response = await fetch(
-      `https://raising-accessed-lots-similar.trycloudflare.com/search?q=${query}`
+      `https://microwave-freeze-computation-menus.trycloudflare.com/search?q=${query}`
     );
     const data = await response.json();
 
@@ -127,7 +127,7 @@ useEffect(() => {
                <img
   src={
     anime.imgSrc
-      ? `https://longitude-ram-homeless-cast.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+      ? `https://cooperative-privacy-ide-dog.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
       : "/placeholder.svg"
   }
   alt={anime.animeTitle}
