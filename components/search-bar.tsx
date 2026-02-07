@@ -126,15 +126,15 @@ useEffect(() => {
             >
                <img
   src={
-    anime.imgSrc
-      ? `https://approximate-corrections-improving-clinics.trycloudflare.com/proxy.php?url=${anime.imgSrc}`
+    anime.poster
+      ? `https://approximate-corrections-improving-clinics.trycloudflare.com/proxy.php?url=${anime.poster}`
       : "/placeholder.svg"
   }
-  alt={anime.animeTitle}
+  alt={anime.title}
   className="w-12 h-12 rounded object-cover"
 />
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground truncate">{anime.animeTitle}</p>
+                <p className="font-semibold text-foreground truncate">{anime.title}</p>
               </div>
             </Link>
           ))}
