@@ -5,36 +5,6 @@ import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import Image from "next/image";
 
-const animeData = [
-  {
-    id: 1,
-    title: 'Attack on Titan',
-    description: 'Humanity fights for survival against giant humanoid creatures',
-    image: '/images/aot.jfif',
-    episodes: 25,
-  },
-  {
-    id: 2,
-    title: 'Demon Slayer',
-    description: 'A young man joins demon slayers to save his sister',
-    image: '/images/ds.jfif',
-    episodes: 26,
-  },
-  {
-    id: 3,
-    title: 'Jujutsu Kaisen',
-    description: 'A teenager swallows a cursed finger and joins a secret organization',
-    image: '/images/jk.jfif',
-    episodes: 24,
-  },
-  {
-    id: 4,
-    title: 'One Piece',
-    description: 'A pirate embarks on adventures to find the ultimate treasure',
-    image: '/images/op.jfif',
-    episodes: 1151,
-  },
-]
 export default function SearchBar() {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<typeof animeData>([])
@@ -43,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string) => {
   try {
     const response = await fetch(
-      `https://payroll-babies-physically-producer.trycloudflare.com/search?q=${query}`
+      `https://essentials-rounds-impacts-traditions.trycloudflare.com//search?q=${query}`
     );
     const data = await response.json();
 
@@ -127,7 +97,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://approximate-corrections-improving-clinics.trycloudflare.com/proxy.php?url=${anime.poster}`
+      ? `https://essentials-rounds-impacts-traditions.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
