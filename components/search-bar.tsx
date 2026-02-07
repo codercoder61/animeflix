@@ -10,32 +10,42 @@ export default function SearchBar() {
   const [suggestions, setSuggestions] = useState<typeof animeData>([])
   const [isOpen, setIsOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
-const searchAnime = async (query: string) => {
+const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
       `https://essentials-rounds-impacts-traditions.trycloudflare.com/search?q=${query}`
     );
     const data = await response.json();
 
-    if (response.ok) {
+    if (!response.ok) throw new Error("Network error");
+
+    // Only update if this is the latest request
+    if (requestId === latestRequestId.current) {
       setSuggestions(data);
-      setIsOpen(data.length > 0); // update immediately based on new data
+      setIsOpen(data.length > 0);
     }
   } catch (error) {
-    console.log('[v0] Error fetching episode source:', error);
-    setSuggestions([]);
-    setIsOpen(false);
+    console.log("[v0] Error fetching episode source:", error);
+    if (requestId === latestRequestId.current) {
+      setSuggestions([]);
+      setIsOpen(false);
+    }
   }
 };
+const latestRequestId = useRef(0);
+
 
 useEffect(() => {
-  if (query.trim() === '') {
+  if (query.trim() === "") {
     setSuggestions([]);
     setIsOpen(false);
     return;
   }
 
-  searchAnime(query);
+  latestRequestId.current += 1;
+  const currentRequestId = latestRequestId.current;
+
+  searchAnime(query, currentRequestId);
 }, [query]);
 
 
