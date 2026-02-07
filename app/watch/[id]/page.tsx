@@ -74,8 +74,8 @@ export default function WatchPage() {
       const data = await response.json();
       if (response.ok) {
         // Replace episodes on first page, append on load more
-        setEpisodes(data.episodes);
-        let totalPages = Math.ceil(data.episodes.length / episodesPerPage)
+        setEpisodes(data.animeList);
+        let totalPages = Math.ceil(data.animeList.length / episodesPerPage)
 
         setTotalPages(totalPages)
         
