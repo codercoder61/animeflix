@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string) => {
   try {
     const response = await fetch(
-      `https://essentials-rounds-impacts-traditions.trycloudflare.com//search?q=${query}`
+      `https://essentials-rounds-impacts-traditions.trycloudflare.com/search?q=${query}`
     );
     const data = await response.json();
 
