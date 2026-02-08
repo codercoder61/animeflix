@@ -13,7 +13,11 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://jeneva-caulicolous-rustily.ngrok-free.dev/search?q=${query}`
+      `https://jeneva-caulicolous-rustily.ngrok-free.dev/search?q=${query}`, {
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+}
     );
     const data = await response.json();
 
