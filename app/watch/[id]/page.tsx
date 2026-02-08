@@ -69,7 +69,11 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://jeneva-caulicolous-rustily.ngrok-free.dev/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`
+        `https://jeneva-caulicolous-rustily.ngrok-free.dev/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+}
       );
       const data = await response.json();
       if (response.ok) {
@@ -94,7 +98,11 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://jeneva-caulicolous-rustily.ngrok-free.dev/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`
+          `https://jeneva-caulicolous-rustily.ngrok-free.dev/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+}
         )
         const data = await response.json()
         if (response.ok) {
@@ -121,7 +129,11 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://jeneva-caulicolous-rustily.ngrok-free.dev/getAnimeInfo?animeId=${animeId}`
+          `https://jeneva-caulicolous-rustily.ngrok-free.dev/getAnimeInfo?animeId=${animeId}`, {
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+}
         )
         const data = await response.json()
                   setDesc(data.animeInfo.desc)
