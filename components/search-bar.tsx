@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://fan-hair-batman-dirt.trycloudflare.com/search?q=${query}`
+      `https://jeneva-caulicolous-rustily.ngrok-free.dev/search?q=${query}`
     );
     const data = await response.json();
 
@@ -107,7 +107,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://fan-hair-batman-dirt.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://jeneva-caulicolous-rustily.ngrok-free.dev/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
