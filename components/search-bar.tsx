@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://jeneva-caulicolous-rustily.ngrok-free.dev/search?q=${query}`, {
+      `https://rolled-willow-brands-listen.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://jeneva-caulicolous-rustily.ngrok-free.dev/image-proxy?url=${anime.poster}`
+      ? `https://rolled-willow-brands-listen.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
