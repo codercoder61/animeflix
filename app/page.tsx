@@ -123,21 +123,7 @@ export default function Home() {
           <ChevronRight size={24} className="text-white" />
         </button>
 
-        {/* Indicators */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {animeData.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-2 rounded-full transition-all ${
-                index === currentSlide
-                  ? 'bg-primary w-8'
-                  : 'bg-white/50 w-2 hover:bg-white/75'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+      
       </section>
 
       {/* CTA Section */}
