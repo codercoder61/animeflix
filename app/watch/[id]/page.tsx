@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://rolled-willow-brands-listen.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
+        `https://mean-overview-hat-horses.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -98,7 +98,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://rolled-willow-brands-listen.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
+          `https://mean-overview-hat-horses.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -129,7 +129,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://rolled-willow-brands-listen.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
+          `https://mean-overview-hat-horses.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
