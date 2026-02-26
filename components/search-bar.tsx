@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://mean-overview-hat-horses.trycloudflare.com/search?q=${query}`, {
+      `https://omissions-interactive-flip-pulling.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://mean-overview-hat-horses.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://omissions-interactive-flip-pulling.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
