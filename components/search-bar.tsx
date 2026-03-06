@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://gas-suggesting-maintains-kai.trycloudflare.com/search?q=${query}`, {
+      `http://192.168.0.176:3001/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://gas-suggesting-maintains-kai.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `http://192.168.0.176:3001/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
