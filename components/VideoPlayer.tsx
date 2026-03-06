@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
-import 'videojs-chromecast' // Chromecast plugin
 
 interface VideoPlayerProps {
   url: string
+  poster?: string
 }
 
-export default function VideoPlayer({ url }: VideoPlayerProps) {
+export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const playerRef = useRef<videojs.Player | null>(null)
   const [loading, setLoading] = useState(true)
@@ -18,73 +18,77 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
   useEffect(() => {
     if (!videoRef.current || playerRef.current) return
 
-    // --- Create player
-    const player = videojs(videoRef.current, {
-      controls: true,
-      fluid: false,
-      responsive: true,
-      aspectRatio: '16:9',
-      controlBar: {
-        children: [
-          'playToggle',
-          'volumePanel',
-          'progressControl',
-          'fullscreenToggle',
-          'chromecastButton', // Chromecast
-          'replayButton',     // Replay custom
-          'downloadButton'    // Download custom
-        ]
+    // --- Dynamic import for Chromecast plugin to avoid SSR issues
+    import('videojs-chromecast').then(() => {
+      const player = videojs(videoRef.current!, {
+        controls: true,
+        fluid: false,
+        responsive: true,
+        aspectRatio: '16:9',
+        controlBar: {
+          children: [
+            'playToggle',
+            'volumePanel',
+            'progressControl',
+            'fullscreenToggle',
+            'chromecastButton', // Chromecast
+            'replayButton',     // Replay custom
+            'downloadButton'    // Download custom
+          ]
+        }
+      })
+
+      // --- Replay Button
+      const Button = videojs.getComponent('Button')
+      class ReplayButton extends Button {
+        constructor(player: any, options: any) {
+          super(player, options)
+          this.controlText('Replay')
+        }
+        handleClick() {
+          player.currentTime(0)
+          player.play()
+        }
       }
+      videojs.registerComponent('replayButton', ReplayButton)
+
+      // --- Download Button
+      class DownloadButton extends Button {
+        constructor(player: any, options: any) {
+          super(player, options)
+          this.controlText('Download')
+        }
+        handleClick() {
+          const a = document.createElement('a')
+          a.href = player.currentSrc()
+          a.download = player.currentSrc().split('/').pop() || 'video.mp4'
+          a.click()
+        }
+      }
+      videojs.registerComponent('downloadButton', DownloadButton)
+
+      playerRef.current = player
+
+      // --- Loading overlay
+      const hideLoading = () => setLoading(false)
+      const showLoading = () => setLoading(true)
+
+      player.on('waiting', showLoading)
+      player.on('canplay', hideLoading)
+      player.on('playing', hideLoading)
     })
 
-    // --- Register Replay Button
-    const Button = videojs.getComponent('Button')
-    class ReplayButton extends Button {
-      constructor(player: any, options: any) {
-        super(player, options)
-        this.controlText('Replay')
-      }
-      handleClick() {
-        player.currentTime(0)
-        player.play()
-      }
-    }
-    videojs.registerComponent('replayButton', ReplayButton)
-
-    // --- Register Download Button
-    class DownloadButton extends Button {
-      constructor(player: any, options: any) {
-        super(player, options)
-        this.controlText('Download')
-      }
-      handleClick() {
-        const a = document.createElement('a')
-        a.href = player.currentSrc()
-        a.download = player.currentSrc().split('/').pop() || 'video.mp4'
-        a.click()
-      }
-    }
-    videojs.registerComponent('downloadButton', DownloadButton)
-
-    playerRef.current = player
-
-    // --- Loading overlay
-    const hideLoading = () => setLoading(false)
-    const showLoading = () => setLoading(true)
-
-    player.on('waiting', showLoading)
-    player.on('canplay', hideLoading)
-    player.on('playing', hideLoading)
-
+    // --- Cleanup
     return () => {
-      player.off('waiting', showLoading)
-      player.off('canplay', hideLoading)
-      player.off('playing', hideLoading)
-      player.dispose()
-      playerRef.current = null
+      const player = playerRef.current
+      if (player) {
+        player.dispose()
+        playerRef.current = null
+      }
     }
   }, [])
 
+  // --- Update source if URL changes
   useEffect(() => {
     const player = playerRef.current
     if (!player || !url) return
@@ -126,7 +130,12 @@ export default function VideoPlayer({ url }: VideoPlayerProps) {
         </div>
       )}
       <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
-        <video ref={videoRef} className="video-js vjs-big-play-centered" playsInline />
+        <video
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+          poster={poster}
+          playsInline
+        />
       </div>
     </div>
   )
