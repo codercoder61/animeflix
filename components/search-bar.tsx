@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://jacksonville-cute-circumstances-and.trycloudflare.com/search?q=${query}`, {
+      `https://conviction-medicare-simpsons-tions.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://jacksonville-cute-circumstances-and.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://conviction-medicare-simpsons-tions.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
