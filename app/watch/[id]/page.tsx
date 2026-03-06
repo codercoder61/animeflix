@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://gas-suggesting-maintains-kai.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
+        `http://192.168.0.176:3001/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -98,7 +98,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://gas-suggesting-maintains-kai.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
+          `http://192.168.0.176:3001/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -129,7 +129,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://gas-suggesting-maintains-kai.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
+          `http://192.168.0.176:3001/getAnimeInfo?animeId=${animeId}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
