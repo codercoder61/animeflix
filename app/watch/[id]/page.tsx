@@ -177,7 +177,7 @@ const fetchEpisodeSource = async (number=1) => {
         {/* Anime Info */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">{title}</h1>
-          <p dir="rtl" className="text-base text-muted-foreground mb-3">
+          <p dir="rtl" className="text-justify text-base text-muted-foreground mb-3">
             {desc}
           </p>
           <div className="flex flex-wrap gap-3">
