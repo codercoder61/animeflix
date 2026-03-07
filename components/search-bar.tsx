@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://pennsylvania-tournament-railroad-real.trycloudflare.com/search?q=${query}`, {
+      `https://outlet-garlic-locks-grades.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://pennsylvania-tournament-railroad-real.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://outlet-garlic-locks-grades.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
