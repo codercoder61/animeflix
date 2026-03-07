@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://outlet-garlic-locks-grades.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
+        `https://robert-impaired-consumer-shares.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -98,7 +98,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://outlet-garlic-locks-grades.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
+          `https://robert-impaired-consumer-shares.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -129,7 +129,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://outlet-garlic-locks-grades.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
+          `https://robert-impaired-consumer-shares.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
