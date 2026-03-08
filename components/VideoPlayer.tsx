@@ -22,36 +22,6 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
 
       const Button = videojs.getComponent('Button')
 
-      // Replay Button
-      class ReplayButton extends Button {
-        constructor(player: any, options: any) {
-          super(player, options)
-          this.controlText('Replay')
-        }
-        handleClick() {
-          player.currentTime(0)
-          player.play()
-        }
-      }
-
-      // Download Button
-      class DownloadButton extends Button {
-        constructor(player: any, options: any) {
-          super(player, options)
-          this.controlText('Download')
-        }
-        handleClick() {
-          const a = document.createElement('a')
-          a.href = player.currentSrc()
-          a.download = player.currentSrc().split('/').pop() || 'video.mp4'
-          a.click()
-        }
-      }
-
-      // REGISTER BEFORE PLAYER CREATION
-      videojs.registerComponent('replayButton', ReplayButton)
-      videojs.registerComponent('downloadButton', DownloadButton)
-
       const player = videojs(videoRef.current!, {
         controls: true,
         responsive: true,
@@ -61,10 +31,7 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
             'playToggle',
             'volumePanel',
             'progressControl',
-            'fullscreenToggle',
-            'chromecastButton',
-            'replayButton',
-            'downloadButton'
+            'fullscreenToggle'
           ]
         }
       })
