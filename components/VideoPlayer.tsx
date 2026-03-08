@@ -18,28 +18,11 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
   useEffect(() => {
     if (!videoRef.current || playerRef.current) return
 
-    // --- Dynamic import for Chromecast plugin to avoid SSR issues
     import('videojs-chromecast').then(() => {
-      const player = videojs(videoRef.current!, {
-        controls: true,
-        fluid: false,
-        responsive: true,
-        aspectRatio: '16:9',
-        controlBar: {
-          children: [
-            'playToggle',
-            'volumePanel',
-            'progressControl',
-            'fullscreenToggle',
-            'chromecastButton', // Chromecast
-            'replayButton',     // Replay custom
-            'downloadButton'    // Download custom
-          ]
-        }
-      })
 
-      // --- Replay Button
       const Button = videojs.getComponent('Button')
+
+      // Replay Button
       class ReplayButton extends Button {
         constructor(player: any, options: any) {
           super(player, options)
@@ -50,9 +33,8 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
           player.play()
         }
       }
-      videojs.registerComponent('replayButton', ReplayButton)
 
-      // --- Download Button
+      // Download Button
       class DownloadButton extends Button {
         constructor(player: any, options: any) {
           super(player, options)
@@ -65,11 +47,30 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
           a.click()
         }
       }
+
+      // REGISTER BEFORE PLAYER CREATION
+      videojs.registerComponent('replayButton', ReplayButton)
       videojs.registerComponent('downloadButton', DownloadButton)
+
+      const player = videojs(videoRef.current!, {
+        controls: true,
+        responsive: true,
+        aspectRatio: '16:9',
+        controlBar: {
+          children: [
+            'playToggle',
+            'volumePanel',
+            'progressControl',
+            'fullscreenToggle',
+            'chromecastButton',
+            'replayButton',
+            'downloadButton'
+          ]
+        }
+      })
 
       playerRef.current = player
 
-      // --- Loading overlay
       const hideLoading = () => setLoading(false)
       const showLoading = () => setLoading(true)
 
@@ -78,7 +79,6 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
       player.on('playing', hideLoading)
     })
 
-    // --- Cleanup
     return () => {
       const player = playerRef.current
       if (player) {
@@ -88,7 +88,6 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
     }
   }, [])
 
-  // --- Update source if URL changes
   useEffect(() => {
     const player = playerRef.current
     if (!player || !url) return
@@ -102,33 +101,30 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
   }, [url])
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100vh',
-        backgroundColor: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      height: '100vh',
+      backgroundColor: '#000',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
       {loading && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            zIndex: 10,
-          }}
-        >
-          <span>Loading video…</span>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          zIndex: 10
+        }}>
+          Loading video…
         </div>
       )}
+
       <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
         <video
           ref={videoRef}
