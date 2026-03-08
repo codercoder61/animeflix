@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://robert-impaired-consumer-shares.trycloudflare.com/search?q=${query}`, {
+      `https://comprehensive-leather-unlike-geography.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://robert-impaired-consumer-shares.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://comprehensive-leather-unlike-geography.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
