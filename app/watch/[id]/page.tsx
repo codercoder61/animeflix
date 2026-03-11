@@ -69,7 +69,7 @@ export default function WatchPage() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://comprehensive-leather-unlike-geography.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
+        `https://capital-skilled-request-going.trycloudflare.com/getAnimeEpisodesInfo?episodeHref=https://anime3rb.com/episode/${animeId}/1&page=${currentPage}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -98,7 +98,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://comprehensive-leather-unlike-geography.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
+          `https://capital-skilled-request-going.trycloudflare.com/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${number}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -129,7 +129,7 @@ const fetchEpisodeSource = async (number=1) => {
       try {
         setIsLoading(true)
         const response = await fetch(
-          `https://comprehensive-leather-unlike-geography.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
+          `https://capital-skilled-request-going.trycloudflare.com/getAnimeInfo?animeId=${animeId}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
