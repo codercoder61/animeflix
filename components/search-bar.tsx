@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://classic-duration-lawrence-chapter.trycloudflare.com/search?q=${query}`, {
+      `https://evanescence-however-scholars-zum.trycloudflare.com/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://classic-duration-lawrence-chapter.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://evanescence-however-scholars-zum.trycloudflare.com/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
