@@ -216,7 +216,7 @@ const fetchEpisodeSource = async (number=1) => {
                     }`}
                   >
                     {episode.episodeName}
-                    <p>{episode.episodeDesc}</p>
+                    <p dir="rtl">{episode.episodeDesc}</p>
                   </button>
                 ))}
               </div>
