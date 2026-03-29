@@ -216,6 +216,7 @@ const fetchEpisodeSource = async (number=1) => {
                     }`}
                   >
                     {episode.episodeName}
+                    <p>{episode.episodeDesc}</p>
                   </button>
                 ))}
               </div>
