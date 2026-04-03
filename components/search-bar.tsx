@@ -111,7 +111,7 @@ useEffect(() => {
                <img crossorigin="anonymous"
   src={
     anime.poster
-      ? `https://web-production-4b80.up.railway.app/image-proxy?url=${anime.poster}`
+      ? `${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
