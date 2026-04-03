@@ -108,7 +108,7 @@ useEffect(() => {
               onClick={handleSelectAnime}
               className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
             >
-               <img
+               <img crossorigin="anonymous"
   src={
     anime.poster
       ? `https://web-production-4b80.up.railway.app/image-proxy?url=${anime.poster}`
