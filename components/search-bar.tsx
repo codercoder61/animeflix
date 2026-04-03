@@ -13,7 +13,7 @@ export default function SearchBar() {
 const searchAnime = async (query: string, requestId: number) => {
   try {
     const response = await fetch(
-      `https://beverly-toys-seven-width.trycloudflare.com/search?q=${query}`, {
+      `https://web-production-4b80.up.railway.app/search?q=${query}`, {
   headers: {
     "ngrok-skip-browser-warning": "true"
   }
@@ -111,7 +111,7 @@ useEffect(() => {
                <img
   src={
     anime.poster
-      ? `https://beverly-toys-seven-width.trycloudflare.com/image-proxy?url=${anime.poster}`
+      ? `https://web-production-4b80.up.railway.app/image-proxy?url=${anime.poster}`
       : "/placeholder.svg"
   }
   alt={anime.title}
