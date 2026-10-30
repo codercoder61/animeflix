@@ -180,7 +180,7 @@ export default function SearchBar() {
 {!isLoading && suggestions.map((anime) => {
   const match = anime.animeUrl?.match(/\/anime\/(?:kitsu:)?(\d+)-/)
   const animeId = match?.[1]
-  const animeId2 = match.id
+  const animeId2 = anime.id
   console.log(animeId)
   if (!animeId) {
     console.warn('Invalid anime URL:', anime.animeUrl)
