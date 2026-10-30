@@ -23,7 +23,7 @@ interface Anime {
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<Anime[]>([])
+  const [suggestions, setSuggestions] = useState([])
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(false)
