@@ -51,31 +51,35 @@ export default function SearchBar() {
       setError(false)
 
       try {
-  const url = `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
+        const url = `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
 
-  console.log("Request URL:", url)
+        const response = await fetch(url, {
+          signal: controller.signal
+        })
 
-  const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`)
+        }
 
-  console.log("HTTP Status:", response.status)
-  console.log("Response OK:", response.ok)
+        const data: Anime[] = await response.json()
 
-  const responseText = await response.text()
+        if (requestId === latestRequestId.current) {
+          setSuggestions(Array.isArray(data) ? data : [])
+          setIsOpen(Array.isArray(data) && data.length > 0)
+        }
 
-  console.log("Backend response:", responseText)
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return
 
-  if (!response.ok) {
-    throw new Error(`HTTP Error: ${response.status}`)
-  }
+        console.error('Search error:', err)
 
-  const data: Anime[] = JSON.parse(responseText)
+        if (requestId === latestRequestId.current) {
+          setSuggestions([])
+          setIsOpen(false)
+          setError(true)
+        }
 
-  setSuggestions(data)
-  setIsOpen(data.length > 0)
-
-} catch (error) {
-  console.error("Search error:", error)
-} finally {
+      } finally {
         if (requestId === latestRequestId.current) {
           setIsLoading(false)
         }
@@ -106,15 +110,12 @@ export default function SearchBar() {
   }, [])
 
   const clearSearch = () => {
+    latestRequestId.current++
     setQuery('')
     setSuggestions([])
     setIsOpen(false)
     setError(false)
     setIsLoading(false)
-  }
-
-  const handleSelectAnime = () => {
-    clearSearch()
   }
 
   return (
@@ -149,7 +150,7 @@ export default function SearchBar() {
         )}
       </div>
 
-      {query.trim() !== '' && (isLoading || error || suggestions.length > 0 || !isLoading) && (
+      {query.trim() !== '' && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
 
           {isLoading && (
@@ -170,40 +171,42 @@ export default function SearchBar() {
             </p>
           )}
 
-          {!isLoading && suggestions.map((anime) => (
-          const match = url.match(/\/anime\/(\d+)-/);
+          {!isLoading && suggestions.map((anime) => {
+            const match = anime.animeUrl?.match(/\/anime\/(\d+)-/)
+            const animeId = match ? match[1] : null
 
-const id = match ? Number(match[1]) : null;
+            if (!animeId) return null
 
-          
-            <Link
-              key={anime.id}
-              to={`/watch/${anime.animeUrl.match(/\/anime\/(\d+)-/) ? anime.animeUrl.match(/\/anime\/(\d+)-/) : null}`}
-              onClick={handleSelectAnime}
-              className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
-            >
-              <img
-                crossOrigin="anonymous"
-                src={anime.anime_image || '/placeholder.svg'}
-                alt={anime.anime_name}
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg'
-                }}
-                className="w-12 h-12 rounded object-cover"
-              />
+            return (
+              <Link
+                key={anime.id}
+                href={`/watch/${animeId}`}
+                onClick={clearSearch}
+                className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
+              >
+                <img
+                  crossOrigin="anonymous"
+                  src={anime.anime_image || '/placeholder.svg'}
+                  alt={anime.anime_name}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg'
+                  }}
+                  className="w-12 h-12 rounded object-cover"
+                />
 
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground truncate">
-                  {anime.anime_name}
-                </p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground truncate">
+                    {anime.anime_name}
+                  </p>
 
-                <p className="text-xs text-muted-foreground">
-                  {anime.airYear} • {anime.num_episodes} Episodes
-                </p>
-              </div>
-            </Link>
-          ))}
+                  <p className="text-xs text-muted-foreground">
+                    {anime.airYear} • {anime.num_episodes} Episodes
+                  </p>
+                </div>
+              </Link>
+            )
+          })}
 
         </div>
       )}
