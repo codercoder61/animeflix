@@ -20,13 +20,13 @@ export default function StatsSection() {
     const statsData: Stat[] = [
       {
         label: 'Anime Series',
-        value: 6000,
+        value: 9K,
         icon: <Tv size={32} />,
         suffix: '+',
       },
       {
         label: 'Episodes Available',
-        value: 50000,
+        value: 161K+,
         icon: <Play size={32} />,
         suffix: '+',
       },
