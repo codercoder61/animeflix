@@ -55,7 +55,6 @@ export default function WatchPage() {
   const animeId2 = params.id2 as string
 
   const [selectedEpisode, setSelectedEpisode] = useState(1)
-  const [url, setUrl] = useState("")
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSourceLoading, setIsSourceLoading] = useState(false)
