@@ -7,7 +7,7 @@ import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { ChevronLeft, Loader } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import VideoPlayer from '../../../components/VideoPlayer'
+import VideoPlayer from '../../../../components/VideoPlayer'
 
 interface Episode {
   id: number
