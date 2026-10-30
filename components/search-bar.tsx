@@ -25,56 +25,77 @@ export default function SearchBar() {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<Anime[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(false)
 
   const searchRef = useRef<HTMLDivElement>(null)
   const latestRequestId = useRef(0)
 
-  const searchAnime = async (query: string, requestId: number) => {
-    try {
-      const response = await fetch(
-        `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(query)}`,
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "true"
-          }
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error("Network error")
-      }
-
-      const data: Anime[] = await response.json()
-
-      if (requestId === latestRequestId.current) {
-        setSuggestions(data)
-        setIsOpen(data.length > 0)
-      }
-
-    } catch (error) {
-      console.error("Error searching anime:", error)
-
-      if (requestId === latestRequestId.current) {
-        setSuggestions([])
-        setIsOpen(false)
-      }
-    }
-  }
-
   useEffect(() => {
-    if (query.trim() === '') {
+    const trimmedQuery = query.trim()
+
+    if (!trimmedQuery) {
+      latestRequestId.current++
       setSuggestions([])
       setIsOpen(false)
+      setIsLoading(false)
+      setError(false)
       return
     }
 
-    const timeout = setTimeout(() => {
-      latestRequestId.current += 1
-      searchAnime(query.trim(), latestRequestId.current)
+    const controller = new AbortController()
+    const requestId = ++latestRequestId.current
+
+    const timeout = setTimeout(async () => {
+      setIsLoading(true)
+      setError(false)
+
+      try {
+        const response = await fetch(
+          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`,
+          {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            },
+            signal: controller.signal
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error('Network error')
+        }
+
+        const data: Anime[] = await response.json()
+
+        if (requestId === latestRequestId.current) {
+          setSuggestions(Array.isArray(data) ? data : [])
+          setIsOpen(Array.isArray(data) && data.length > 0)
+        }
+
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          return
+        }
+
+        console.error('Error searching anime:', err)
+
+        if (requestId === latestRequestId.current) {
+          setSuggestions([])
+          setIsOpen(false)
+          setError(true)
+        }
+
+      } finally {
+        if (requestId === latestRequestId.current) {
+          setIsLoading(false)
+        }
+      }
     }, 300)
 
-    return () => clearTimeout(timeout)
-
+    return () => {
+      clearTimeout(timeout)
+      controller.abort()
+    }
   }, [query])
 
   useEffect(() => {
@@ -98,12 +119,12 @@ export default function SearchBar() {
     setQuery('')
     setSuggestions([])
     setIsOpen(false)
+    setError(false)
+    setIsLoading(false)
   }
 
   const handleSelectAnime = () => {
-    setQuery('')
-    setSuggestions([])
-    setIsOpen(false)
+    clearSearch()
   }
 
   return (
@@ -120,12 +141,15 @@ export default function SearchBar() {
           placeholder="Search anime..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
+          onFocus={() => {
+            if (suggestions.length > 0) setIsOpen(true)
+          }}
           className="w-full pl-10 pr-10 py-2 bg-muted text-foreground placeholder-muted-foreground rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
         />
 
         {query && (
           <button
+            type="button"
             onClick={clearSearch}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Clear search"
@@ -135,10 +159,28 @@ export default function SearchBar() {
         )}
       </div>
 
-      {isOpen && suggestions.length > 0 && (
+      {query.trim() !== '' && (isLoading || error || suggestions.length > 0 || !isLoading) && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
 
-          {suggestions.map((anime) => (
+          {isLoading && (
+            <p className="p-4 text-center text-muted-foreground">
+              Searching...
+            </p>
+          )}
+
+          {!isLoading && error && (
+            <p className="p-4 text-center text-red-500">
+              Unable to search anime. Please try again.
+            </p>
+          )}
+
+          {!isLoading && !error && suggestions.length === 0 && (
+            <p className="p-4 text-center text-muted-foreground">
+              No anime found matching "{query}"
+            </p>
+          )}
+
+          {!isLoading && suggestions.map((anime) => (
             <Link
               key={anime.id}
               href={`/watch/${anime.id}`}
@@ -147,8 +189,12 @@ export default function SearchBar() {
             >
               <img
                 crossOrigin="anonymous"
-                src={anime.anime_image || "/placeholder.svg"}
+                src={anime.anime_image || '/placeholder.svg'}
                 alt={anime.anime_name}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder.svg'
+                }}
                 className="w-12 h-12 rounded object-cover"
               />
 
@@ -164,12 +210,6 @@ export default function SearchBar() {
             </Link>
           ))}
 
-        </div>
-      )}
-
-      {query && !isOpen && suggestions.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg p-4 text-center text-muted-foreground z-50">
-          No anime found matching "{query}"
         </div>
       )}
 
