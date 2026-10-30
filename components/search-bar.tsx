@@ -63,6 +63,10 @@ export default function SearchBar() {
 
         const data = await response.json()
 
+        console.log("Search query:", trimmedQuery)
+        console.log("API response:", data)
+        console.log("Is array:", Array.isArray(data))
+        
         if (requestId === latestRequestId.current) {
           setSuggestions(Array.isArray(data) ? data : [])
           setIsOpen(Array.isArray(data) && data.length > 0)
