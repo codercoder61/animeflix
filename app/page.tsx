@@ -94,7 +94,7 @@ export default function Home() {
     </p>
 
     <Link
-      href={`/watch/${anime.id}`}
+      to={`/watch/${anime.id}`}
       className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90"
     >
       <Play size={20} />
@@ -151,7 +151,7 @@ export default function Home() {
           {animeData.map((anime,index) => (
             <Link
               key={anime.id}
-              href={`/watch/${anime.id}`}
+              to={`/watch/${anime.id}`}
               className="group relative overflow-hidden rounded-lg h-64"
             >
               <Image
