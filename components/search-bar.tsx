@@ -51,41 +51,31 @@ export default function SearchBar() {
       setError(false)
 
       try {
-        const response = await fetch(
-          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`,
-          {
-            headers: {
-              'ngrok-skip-browser-warning': 'true'
-            },
-            signal: controller.signal
-          }
-        )
+  const url = `https://YOUR-BACKEND-URL/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
 
-        if (!response.ok) {
-          throw new Error('Network error')
-        }
+  console.log("Request URL:", url)
 
-        const data: Anime[] = await response.json()
+  const response = await fetch(url)
 
-        if (requestId === latestRequestId.current) {
-          setSuggestions(Array.isArray(data) ? data : [])
-          setIsOpen(Array.isArray(data) && data.length > 0)
-        }
+  console.log("HTTP Status:", response.status)
+  console.log("Response OK:", response.ok)
 
-      } catch (err) {
-        if (err instanceof Error && err.name === 'AbortError') {
-          return
-        }
+  const responseText = await response.text()
 
-        console.error('Error searching anime:', err)
+  console.log("Backend response:", responseText)
 
-        if (requestId === latestRequestId.current) {
-          setSuggestions([])
-          setIsOpen(false)
-          setError(true)
-        }
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status}`)
+  }
 
-      } finally {
+  const data: Anime[] = JSON.parse(responseText)
+
+  setSuggestions(data)
+  setIsOpen(data.length > 0)
+
+} catch (error) {
+  console.error("Search error:", error)
+} finally {
         if (requestId === latestRequestId.current) {
           setIsLoading(false)
         }
