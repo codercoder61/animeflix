@@ -171,42 +171,41 @@ export default function SearchBar() {
             </p>
           )}
 
-          {!isLoading && suggestions.map((anime) => {
-            const match = anime.animeUrl?.match(/\/anime\/(\d+)-/)
-            const animeId = match ? match[1] : null
+          
+{!isLoading && suggestions.map((anime) => {
+  const match = anime.animeUrl?.match(/\/anime\/(\d+)-/)
+  const animeId = match?.[1] ?? anime.id
 
-            if (!animeId) return null
+  return (
+    <Link
+      key={anime.id}
+      href={`/watch/${animeId}`}
+      onClick={clearSearch}
+      className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
+    >
+      <img
+        src={anime.anime_image || '/placeholder.svg'}
+        alt={anime.anime_name || 'Anime'}
+        loading="lazy"
+        onError={(e) => {
+          e.currentTarget.src = '/placeholder.svg'
+        }}
+        className="w-12 h-12 rounded object-cover"
+      />
 
-            return (
-              <Link
-                key={anime.id}
-                href={`/watch/${animeId}`}
-                onClick={clearSearch}
-                className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
-              >
-                <img
-                  crossOrigin="anonymous"
-                  src={anime.anime_image || '/placeholder.svg'}
-                  alt={anime.anime_name}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg'
-                  }}
-                  className="w-12 h-12 rounded object-cover"
-                />
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-foreground truncate">
+          {anime.anime_name}
+        </p>
 
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-foreground truncate">
-                    {anime.anime_name}
-                  </p>
+        <p className="text-xs text-muted-foreground">
+          {anime.airYear} • {anime.num_episodes} Episodes
+        </p>
+      </div>
+    </Link>
+  )
+})}
 
-                  <p className="text-xs text-muted-foreground">
-                    {anime.airYear} • {anime.num_episodes} Episodes
-                  </p>
-                </div>
-              </Link>
-            )
-          })}
 
         </div>
       )}
