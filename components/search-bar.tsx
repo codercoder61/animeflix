@@ -61,7 +61,7 @@ export default function SearchBar() {
           throw new Error(`HTTP Error: ${response.status}`)
         }
 
-        const data: Anime[] = await response.json()
+        const data = await response.json()
 
         if (requestId === latestRequestId.current) {
           setSuggestions(Array.isArray(data) ? data : [])
