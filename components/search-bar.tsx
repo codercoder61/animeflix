@@ -172,9 +172,15 @@ export default function SearchBar() {
           )}
 
           
-{!isLoading && suggestions && suggestions.map((anime) => {
+
+{!isLoading && suggestions.map((anime) => {
   const match = anime.animeUrl?.match(/\/anime\/(?:kitsu:)?(\d+)-/)
   const animeId = match?.[1]
+
+  if (!animeId) {
+    console.warn('Invalid anime URL:', anime.animeUrl)
+    return null
+  }
 
   return (
     <Link
@@ -199,12 +205,13 @@ export default function SearchBar() {
         </p>
 
         <p className="text-xs text-muted-foreground">
-          {anime.airYear} • {anime.num_episodes} Episodes
+          {anime.airYear || 'Unknown'} • {anime.num_episodes || 'Unknown'} Episodes
         </p>
       </div>
     </Link>
   )
 })}
+
 
 
         </div>
