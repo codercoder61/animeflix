@@ -51,7 +51,7 @@ export default function SearchBar() {
       setError(false)
 
       try {
-  const url = `https://YOUR-BACKEND-URL/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
+  const url = `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
 
   console.log("Request URL:", url)
 
