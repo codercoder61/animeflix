@@ -76,7 +76,7 @@ export default function WatchPage() {
         setIsLoading(true)
 
         const response = await fetch(
-          `https://YOUR_API_URL/getAnimeEpisodes.php?animeId=${encodeURIComponent(animeId)}`
+          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/getEpisodes.php?id=${encodeURIComponent(animeId)}`
         )
 
         if (!response.ok) {
