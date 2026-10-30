@@ -1,11 +1,10 @@
-
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
-import { ChevronLeft, Loader } from 'lucide-react'
+import { ChevronLeft, Loader, Play } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import VideoPlayer from '../../../../components/VideoPlayer'
 
@@ -14,11 +13,6 @@ interface Episode {
   name_episode: string
   image_episode: string
   anime_title_id: number
-}
-
-interface AnimeInfo {
-  anime_name: string
-  synopsis: string
 }
 
 const getPaginationRange = (
@@ -37,282 +31,310 @@ const getPaginationRange = (
   if (start > 1) pages.push(1)
   if (start > 2) pages.push('...')
 
-  for (let i = start; i <= end; i++) {
-    pages.push(i)
-  }
+  for (let i = start; i <= end; i++) pages.push(i)
 
   if (end < totalPages - 1) pages.push('...')
   if (end < totalPages) pages.push(totalPages)
 
-  return pages.filter(
-    (item, index, self) => self.indexOf(item) === index
-  )
+  return pages.filter((item, index, self) => self.indexOf(item) === index)
 }
 
 export default function WatchPage() {
-  const params = useParams()
-  const animeId = params.id1 as string
-  const animeId2 = params.id2 as string
+  const params = useParams<{ id1: string; id2: string }>()
+  const animeId = params.id1
+  const animeId2 = params.id2
 
-  const [selectedEpisode, setSelectedEpisode] = useState(1)
+  const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null)
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSourceLoading, setIsSourceLoading] = useState(false)
+  const [sourceError, setSourceError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-
   const [desc, setDesc] = useState('')
   const [title, setTitle] = useState('')
-  const [url, setUrl] = useState(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`)
+  const [url, setUrl] = useState('')
 
   const episodesPerPage = 12
-
   const totalPages = Math.ceil(episodes.length / episodesPerPage)
 
-  // Fetch episodes
+  // Load the episode list for this anime.
   useEffect(() => {
-    if (!animeId) return
+    if (!animeId2) return
+
+    const controller = new AbortController()
 
     const fetchEpisodes = async () => {
-      try {
-        setIsLoading(true)
+      setIsLoading(true)
+      setEpisodes([])
+      setSelectedEpisode(null)
+      setUrl('')
 
+      try {
         const response = await fetch(
-          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/getEpisodes.php?id=${encodeURIComponent(animeId2)}`
+          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/getEpisodes.php?id=${encodeURIComponent(animeId2)}`,
+          { signal: controller.signal }
         )
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch episodes')
-        }
+        if (!response.ok) throw new Error(`Failed to fetch episodes (${response.status})`)
 
         const data: Episode[] = await response.json()
-
         setEpisodes(Array.isArray(data) ? data : [])
         setCurrentPage(1)
-
       } catch (error) {
-        console.error('Error fetching episodes:', error)
-        setEpisodes([])
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Error fetching episodes:', error)
+          setEpisodes([])
+        }
       } finally {
-        setIsLoading(false)
+        if (!controller.signal.aborted) setIsLoading(false)
       }
     }
 
     fetchEpisodes()
-  }, [animeId])
+    return () => controller.abort()
+  }, [animeId2])
 
-  // Fetch episode source
-  const fetchEpisodeSource = async (episodeId: number) => {
+  // Resolve a selected episode to its playable source.
+  const fetchEpisodeSource = useCallback(async (episodeId: number) => {
+    setIsSourceLoading(true)
+    setSourceError('')
+    setUrl('')
+
     try {
-      setIsSourceLoading(true)
-
+      const episodeHref = `https://anime3rb.com/episode/${animeId}/${episodeId}`
       const response = await fetch(
-        `https://web-production-4b80.up.railway.app/getEpisodeSource?episodeHref=https://anime3rb.com/episode/${animeId}/${episodeId}`,
+        `https://web-production-4b80.up.railway.app/getEpisodeSource?episodeHref=${encodeURIComponent(episodeHref)}`,
         {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
+          headers: { 'ngrok-skip-browser-warning': 'true' }
         }
       )
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch episode source')
-      }
+      if (!response.ok) throw new Error(`Failed to fetch episode source (${response.status})`)
 
       const data = await response.json()
 
-      if (data.episodeSrc) {
-        const encodedUrl = encodeURIComponent(data.episodeSrc)
-        setUrl(`/api/video?url=${encodedUrl}`)
+      if (!data.episodeSrc) {
+        throw new Error('No video source was returned for this episode.')
       }
 
+      setUrl(`/api/video?url=${encodeURIComponent(data.episodeSrc)}`)
     } catch (error) {
       console.error('Error fetching episode source:', error)
+      setSourceError('Unable to load this episode. Please try another episode.')
       setUrl('')
     } finally {
       setIsSourceLoading(false)
     }
-  }
+  }, [animeId])
 
-  // Fetch anime information
+  // Automatically load the first episode after the list is received.
+  useEffect(() => {
+    if (episodes.length === 0) return
+
+    const firstEpisode = episodes[0]
+    setSelectedEpisode(firstEpisode.id)
+    fetchEpisodeSource(firstEpisode.id)
+  }, [episodes, fetchEpisodeSource])
+
+  // Load anime title and synopsis.
   useEffect(() => {
     if (!animeId) return
+
+    const controller = new AbortController()
 
     const fetchAnimeInfo = async () => {
       try {
         const response = await fetch(
-          `https://YOUR_API_URL/getAnimeInfo.php?animeId=${encodeURIComponent(animeId)}`
+          `https://YOUR_API_URL/getAnimeInfo.php?animeId=${encodeURIComponent(animeId)}`,
+          { signal: controller.signal }
         )
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch anime info')
-        }
+        if (!response.ok) throw new Error('Failed to fetch anime info')
 
         const data = await response.json()
-
         setDesc(data.synopsis || '')
         setTitle(data.anime_name || '')
-
       } catch (error) {
-        console.error('Error fetching anime info:', error)
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Error fetching anime info:', error)
+        }
       }
     }
 
     fetchAnimeInfo()
+    return () => controller.abort()
   }, [animeId])
 
-  // Load first episode when episodes are available
-  useEffect(() => {
-    if (episodes.length > 0) {
-      fetchEpisodeSource(episodes[0].id)
-      setSelectedEpisode(episodes[0].id)
-    }
-  }, [episodes])
-
-  // Change episode
   const handleEpisodeChange = (episode: Episode) => {
+    if (episode.id === selectedEpisode) return
+
     setSelectedEpisode(episode.id)
     fetchEpisodeSource(episode.id)
+    // Keep the selected episode visible if it belongs to another page.
+    const episodeIndex = episodes.findIndex(item => item.id === episode.id)
+    if (episodeIndex >= 0) {
+      setCurrentPage(Math.floor(episodeIndex / episodesPerPage) + 1)
+    }
   }
 
   const startIndex = (currentPage - 1) * episodesPerPage
-
-  const currentEpisodes = episodes.slice(
-    startIndex,
-    startIndex + episodesPerPage
-  )
+  const currentEpisodes = episodes.slice(startIndex, startIndex + episodesPerPage)
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 lg:px-0 py-6">
-
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 lg:px-0 py-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity mb-4 font-semibold text-sm"
+          className="inline-flex items-center gap-2 text-primary hover:opacity-80 transition-opacity mb-5 font-semibold text-sm"
         >
           <ChevronLeft size={18} />
           Back to Home
         </Link>
 
-        {/* Video Player */}
-        <div className="bg-black rounded-lg overflow-hidden mb-6 aspect-video relative">
-          <div className="w-full h-full">
-            <VideoPlayer url={url} />
+        {/* Player: the player component should render an iframe/video at 100% width and height. */}
+        <section className="w-full mb-6">
+          <div className="relative w-full aspect-video min-h-[220px] sm:min-h-0 bg-black rounded-xl overflow-hidden shadow-lg">
+            {url ? (
+              <div className="absolute inset-0 w-full h-full [&_iframe]:!absolute [&_iframe]:!inset-0 [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!border-0 [&_video]:!w-full [&_video]:!h-full">
+                <VideoPlayer url={url} />
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white">
+                {isSourceLoading ? (
+                  <Loader size={34} className="animate-spin" />
+                ) : (
+                  <>
+                    <Play size={38} className="opacity-70" />
+                    <p className="text-sm text-white/70">
+                      {sourceError || (selectedEpisode ? 'Video unavailable' : 'Select an episode to start watching')}
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {isSourceLoading && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/75 text-white">
+                <Loader size={34} className="animate-spin" />
+                <p className="text-sm font-medium">Loading episode...</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Anime details and current episode */}
+        <section className="mb-7">
+          {title && <h1 className="text-2xl sm:text-3xl font-bold mb-3">{title}</h1>}
+
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <div className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2">
+              <Play size={16} className="text-primary" />
+              <span className="text-sm text-muted-foreground">Now playing</span>
+              <span className="font-bold text-primary">
+                {selectedEpisode ? `Episode ${selectedEpisode}` : '—'}
+              </span>
+            </div>
           </div>
 
-          {isSourceLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-              <Loader size={30} className="animate-spin text-white" />
-            </div>
+          {desc && (
+            <p dir="rtl" className="text-justify text-sm sm:text-base leading-7 text-muted-foreground">
+              {desc}
+            </p>
           )}
-        </div>
+        </section>
 
-        {/* Anime Information */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">
-            {title}
-          </h1>
-
-          <p
-            dir="rtl"
-            className="text-justify text-base text-muted-foreground mb-3"
-          >
-            {desc}
-          </p>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="bg-card p-3 rounded-lg border border-border">
-              <p className="text-xs text-muted-foreground">
-                Now Playing
-              </p>
-
-              <p className="text-xl font-bold text-primary">
-                Episode {selectedEpisode}
-              </p>
+        {/* Episode selector */}
+        <section className="bg-card border border-border rounded-xl p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+            <div>
+              <h2 className="text-xl font-bold">Episodes</h2>
+              <p className="text-sm text-muted-foreground">{episodes.length} episodes available</p>
             </div>
+            {selectedEpisode !== null && (
+              <span className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1 font-semibold">
+                Selected: {selectedEpisode}
+              </span>
+            )}
           </div>
-        </div>
-
-        {/* Episodes */}
-        <div className="bg-card border border-border rounded-lg p-4">
-
-          <h2 className="text-xl font-bold mb-4">
-            Episodes ({episodes.length})
-          </h2>
 
           {isLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <Loader size={24} className="animate-spin text-primary" />
+            <div className="flex justify-center items-center py-12">
+              <Loader size={26} className="animate-spin text-primary" />
             </div>
           ) : episodes.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              No episodes available.
-            </p>
+            <p className="text-center text-muted-foreground py-10">No episodes available.</p>
           ) : (
             <>
-              {/* Episode Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
+                {currentEpisodes.map((episode) => {
+                  const isSelected = selectedEpisode === episode.id
 
-                {currentEpisodes.map((episode, index) => (
-                  <button
-                    key={episode.id}
-                    onClick={() => setUrl(`https://megaplay.buzz/stream/mal/${animeId}/${index}/sub`)}
-                    className={`rounded-lg overflow-hidden text-left transition-all border ${
-                      selectedEpisode === episode.id
-                        ? 'border-primary ring-1 ring-primary'
-                        : 'border-border hover:border-primary'
-                    }`}
-                  >
-                    <div className="aspect-video bg-muted">
-                      <img
-                        src={episode.image_episode || '/placeholder.svg'}
-                        alt={episode.name_episode}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
+                  return (
+                    <button
+                      key={episode.id}
+                      type="button"
+                      onClick={() => handleEpisodeChange(episode)}
+                      aria-pressed={isSelected}
+                      className={`group relative min-w-0 overflow-hidden rounded-lg border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                        isSelected
+                          ? 'border-primary ring-2 ring-primary shadow-md'
+                          : 'border-border hover:border-primary/70'
+                      }`}
+                    >
+                      <div className="relative aspect-video bg-muted overflow-hidden">
+                        <img
+                          src={episode.image_episode || '/placeholder.svg'}
+                          alt={episode.name_episode || `Episode ${episode.id}`}
+                          onError={(event) => {
+                            event.currentTarget.src = '/placeholder.svg'
+                          }}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-colors" />
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <span className="rounded-full bg-primary p-2 text-primary-foreground">
+                              <Play size={18} fill="currentColor" />
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-                    <div className={`p-2 ${
-                      selectedEpisode === episode.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      <p className="font-bold text-xs">
-                        Episode {episode.id}
-                      </p>
-
-                      <p className="text-xs truncate">
-                        {episode.name_episode}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-
+                      <div className={`p-2 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}`}>
+                        <p className="font-bold text-xs">Episode {episode.id}</p>
+                        <p className="text-xs opacity-80 truncate mt-1">
+                          {episode.name_episode || `Episode ${episode.id}`}
+                        </p>
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mb-4 flex-wrap">
-
+                <nav aria-label="Episode pages" className="flex justify-center items-center gap-2 flex-wrap">
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    type="button"
+                    onClick={() => setCurrentPage(page => Math.max(page - 1, 1))}
                     disabled={currentPage === 1}
-                    className="px-3 py-1 rounded bg-muted hover:bg-muted/80 disabled:opacity-50"
+                    className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
 
-                  {getPaginationRange(totalPages, currentPage).map((page, idx) =>
+                  {getPaginationRange(totalPages, currentPage).map((page, index) =>
                     page === '...' ? (
-                      <span key={`ellipsis-${idx}`} className="px-3 py-1">
-                        …
-                      </span>
+                      <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">…</span>
                     ) : (
                       <button
                         key={`page-${page}`}
+                        type="button"
                         onClick={() => setCurrentPage(page as number)}
-                        className={`px-3 py-1 rounded transition-colors ${
+                        aria-current={currentPage === page ? 'page' : undefined}
+                        className={`min-w-9 px-3 py-2 text-sm rounded-lg transition-colors ${
                           currentPage === page
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-muted text-muted-foreground hover:bg-muted/80'
@@ -324,19 +346,18 @@ export default function WatchPage() {
                   )}
 
                   <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    type="button"
+                    onClick={() => setCurrentPage(page => Math.min(page + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded bg-muted hover:bg-muted/80 disabled:opacity-50"
+                    className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
-
-                </div>
+                </nav>
               )}
             </>
           )}
-        </div>
-
+        </section>
       </main>
 
       <Footer />
