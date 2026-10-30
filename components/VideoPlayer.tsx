@@ -15,57 +15,19 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
   const [loading, setLoading] = useState(true)
   const prevUrlRef = useRef<string | null>(null)
 
-  useEffect(() => {
-    if (!videoRef.current || playerRef.current) return
+ 
 
-    import('videojs-chromecast').then(() => {
+  // useEffect(() => {
+  //   const player = playerRef.current
+  //   if (!player || !url) return
 
-      const Button = videojs.getComponent('Button')
-
-      const player = videojs(videoRef.current!, {
-        controls: true,
-        responsive: true,
-        aspectRatio: '16:9',
-        controlBar: {
-          children: [
-            'playToggle',
-            'volumePanel',
-            'progressControl',
-            'fullscreenToggle'
-          ]
-        }
-      })
-
-      playerRef.current = player
-
-      const hideLoading = () => setLoading(false)
-      const showLoading = () => setLoading(true)
-
-      player.on('waiting', showLoading)
-      player.on('canplay', hideLoading)
-      player.on('playing', hideLoading)
-    })
-
-    return () => {
-      const player = playerRef.current
-      if (player) {
-        player.dispose()
-        playerRef.current = null
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const player = playerRef.current
-    if (!player || !url) return
-
-    if (prevUrlRef.current !== url) {
-      const type = url.endsWith('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      player.src({ src: url, type })
-      setLoading(true)
-      prevUrlRef.current = url
-    }
-  }, [url])
+  //   if (prevUrlRef.current !== url) {
+  //     const type = url.endsWith('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
+  //     player.src({ src: url, type })
+  //     setLoading(true)
+  //     prevUrlRef.current = url
+  //   }
+  // }, [url])
 
   return (
     <div style={{
@@ -93,12 +55,17 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
       )}
 
       <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
-        <video
-          ref={videoRef}
+        <iframe 
           className="video-js vjs-big-play-centered"
           poster={poster}
           playsInline
-        />
+          src={url}
+          width="100%" 
+          height="100%" 
+          frameborder="0" 
+          scrolling="no" 
+          allowfullscreen>
+        </iframe>
       </div>
     </div>
   )
