@@ -173,7 +173,7 @@ export default function SearchBar() {
 
           
 {!isLoading && suggestions.map((anime) => {
-  const match = url.match(/anime\/(\d+)-/);
+  const match = anime.animeUrl.match(/anime\/(\d+)-/);
   const id = match ? match[1] : null;
 
   return (
