@@ -10,28 +10,28 @@ import Image from "next/image";
 
 const animeData = [
   {
-    id: "shingeki-no-kyojin",
+    id: "16498",
     title: 'Attack on Titan',
     description: 'Humanity fights for survival against giant humanoid creatures',
     image: '/images/aot.png',
     episodes: 25,
   },
   {
-    id: "kimetsu-no-yaiba",
+    id: "38000",
     title: 'Demon Slayer',
     description: 'A young man joins demon slayers to save his sister',
     image: '/images/ds.jpg',
     episodes: 26,
   },
   {
-    id: "jujutsu-kaisen",
+    id: "40748",
     title: 'Jujutsu Kaisen',
     description: 'A teenager swallows a cursed finger and joins a secret organization',
     image: '/images/jk.jfif',
     episodes: 24,
   },
   {
-    id: "one-piece",
+    id: "21",
     title: 'One Piece',
     description: 'A pirate embarks on adventures to find the ultimate treasure',
     image: '/images/op.jpg',
