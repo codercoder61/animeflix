@@ -55,6 +55,7 @@ export default function WatchPage() {
   const animeId2 = params.id2 as string
 
   const [selectedEpisode, setSelectedEpisode] = useState(1)
+  const [url, setUrl] = useState("")
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSourceLoading, setIsSourceLoading] = useState(false)
@@ -62,7 +63,7 @@ export default function WatchPage() {
 
   const [desc, setDesc] = useState('')
   const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`)
 
   const episodesPerPage = 12
 
@@ -254,10 +255,10 @@ export default function WatchPage() {
               {/* Episode Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
 
-                {currentEpisodes.map((episode) => (
+                {currentEpisodes.map((episode, index) => (
                   <button
                     key={episode.id}
-                    onClick={() => handleEpisodeChange(episode)}
+                    onClick={() => setUrl(`https://megaplay.buzz/stream/mal/${animeId}/${index}/sub`)}
                     className={`rounded-lg overflow-hidden text-left transition-all border ${
                       selectedEpisode === episode.id
                         ? 'border-primary ring-1 ring-primary'
