@@ -171,9 +171,14 @@ export default function SearchBar() {
           )}
 
           {!isLoading && suggestions.map((anime) => (
+          const match = url.match(/\/anime\/(\d+)-/);
+
+const id = match ? Number(match[1]) : null;
+
+          
             <Link
               key={anime.id}
-              href={`/watch/${anime.id}`}
+              to={`/watch/${anime.animeUrl.match(/\/anime\/(\d+)-/) ? anime.animeUrl.match(/\/anime\/(\d+)-/) : null}`}
               onClick={handleSelectAnime}
               className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border last:border-b-0"
             >
