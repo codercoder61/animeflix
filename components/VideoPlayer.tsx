@@ -41,17 +41,18 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
     }}>
 
 
-      <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
+      <div className="relative w-full aspect-video max-w-[1200px] mx-auto overflow-hidden bg-black">
         <iframe 
-          className="video-js vjs-big-play-centered"
+    className="absolute inset-0 w-full h-full border-0"
           poster={poster}
           playsInline
           src={url}
           width="100%" 
           height="100%" 
-          frameborder="0" 
-          scrolling="no" 
-          allowfullscreen>
+          title="Video player"
+    allow="autoplay; fullscreen; picture-in-picture"
+    allowFullScreen
+    scrolling="no">
         </iframe>
       </div>
     </div>
