@@ -52,7 +52,7 @@ export default function WatchPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [desc, setDesc] = useState('')
   const [title, setTitle] = useState('')
-  const [url, setUrl] = useState(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`)
+  const [url, setUrl] = useState("")
 
   const episodesPerPage = 12
   const totalPages = Math.ceil(episodes.length / episodesPerPage)
@@ -164,18 +164,19 @@ export default function WatchPage() {
   //   return () => controller.abort()
   // }, [animeId])
 
-  const handleEpisodeChange = (episode) => {
-    if (episode.id === selectedEpisode) return
-    setSelectedEpisode(episode)
-    setUrl(`https://megaplay.buzz/stream/mal/16498/${episode}/sub`)
-    setSelectedEpisode(episode.id)
-    // Keep the selected episode visible if it belongs to another page.
-    const episodeIndex = episodes.findIndex(item => item.id === episode.id)
-    if (episodeIndex >= 0) {
-      setCurrentPage(Math.floor(episodeIndex / episodesPerPage) + 1)
-    }
-  }
+  const handleEpisodeChange = (episodeNumber: number) => {
+  setSelectedEpisode(episodeNumber);
+  setSourceError('');
+  setUrl(
+    `https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`
+  );
+};
+useEffect(() => {
+  if (episodes.length === 0 || !animeId) return;
 
+  setSelectedEpisode(1);
+  setUrl(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`);
+}, [episodes, animeId]);
   const startIndex = (currentPage - 1) * episodesPerPage
   const currentEpisodes = episodes.slice(startIndex, startIndex + episodesPerPage)
 
@@ -197,7 +198,7 @@ export default function WatchPage() {
           <div className="relative w-full aspect-video min-h-[220px] sm:min-h-0 bg-black rounded-xl overflow-hidden shadow-lg">
             {url ? (
               <div className="absolute inset-0 w-full h-full [&_iframe]:!absolute [&_iframe]:!inset-0 [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!border-0 [&_video]:!w-full [&_video]:!h-full">
-                <VideoPlayer url={url} />
+                <VideoPlayer key={url} url={url} />
               </div>
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white">
@@ -268,49 +269,54 @@ export default function WatchPage() {
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
                 {currentEpisodes.map((episode, index) => {
-                  const isSelected = selectedEpisode === episode.id
+  const episodeNumber = startIndex + index + 1;
+  const isSelected = selectedEpisode === episodeNumber;
 
-                  return (
-                    <button
-                      key={episode.id}
-                      type="button"
-                      onClick={() => handleEpisodeChange( ( currentPage - 1 ) * 12 + index + 1)}
-                      aria-pressed={isSelected}
-                      className={`group relative min-w-0 overflow-hidden rounded-lg border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                        isSelected
-                          ? 'border-primary ring-2 ring-primary shadow-md'
-                          : 'border-border hover:border-primary/70'
-                      }`}
-                    >
-                      <div className="relative aspect-video bg-muted overflow-hidden">
-                        <img
-                          src={episode.image_episode || '/placeholder.svg'}
-                          alt={episode.name_episode || `Episode ${episode.id}`}
-                          onError={(event) => {
-                            event.currentTarget.src = '/placeholder.svg'
-                          }}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-colors" />
-                        {isSelected && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <span className="rounded-full bg-primary p-2 text-primary-foreground">
-                              <Play size={18} fill="currentColor" />
-                            </span>
-                          </div>
-                        )}
-                      </div>
+  return (
+    <button
+      key={episode.id}
+      type="button"
+      onClick={() => handleEpisodeChange(episodeNumber)}
+      aria-pressed={isSelected}
+      className={`group relative min-w-0 overflow-hidden rounded-lg border text-left transition-all ${
+        isSelected
+          ? 'border-primary ring-2 ring-primary shadow-md'
+          : 'border-border hover:border-primary/70'
+      }`}
+    >
+      <div className="relative aspect-video bg-muted overflow-hidden">
+        <img
+          src={episode.image_episode || '/placeholder.svg'}
+          alt={`Episode ${episodeNumber}`}
+          onError={(event) => {
+            event.currentTarget.src = '/placeholder.svg';
+          }}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
 
-                      <div className={`p-2 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}`}>
-                        <p className="font-bold text-xs">Episode {episode.id}</p>
-                        <p className="text-xs opacity-80 truncate mt-1">
-                          {episode.name_episode || `Episode ${episode.id}`}
-                        </p>
-                      </div>
-                    </button>
-                  )
-                })}
+        {isSelected && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+            <span className="rounded-full bg-primary p-2 text-primary-foreground">
+              <Play size={18} fill="currentColor" />
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className={`p-2 ${
+        isSelected
+          ? 'bg-primary text-primary-foreground'
+          : 'bg-muted text-foreground'
+      }`}>
+        <p className="font-bold text-xs">Episode {episodeNumber}</p>
+        <p className="text-xs opacity-80 truncate mt-1">
+          {episode.name_episode || `Episode ${episodeNumber}`}
+        </p>
+      </div>
+    </button>
+  );
+})}
               </div>
 
               {totalPages > 1 && (
