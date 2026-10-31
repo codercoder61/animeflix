@@ -94,38 +94,38 @@ export default function WatchPage() {
     return () => controller.abort()
   }, [animeId2])
 
-  // Resolve a selected episode to its playable source.
-  const fetchEpisodeSource = useCallback(async (episodeId: number) => {
-    setIsSourceLoading(true)
-    setSourceError('')
-    setUrl('')
+  // // Resolve a selected episode to its playable source.
+  // const fetchEpisodeSource = useCallback(async (episodeId: number) => {
+  //   setIsSourceLoading(true)
+  //   setSourceError('')
+  //   setUrl('')
 
-    try {
-      const episodeHref = `https://anime3rb.com/episode/${animeId}/${episodeId}`
-      const response = await fetch(
-        `https://web-production-4b80.up.railway.app/getEpisodeSource?episodeHref=${encodeURIComponent(episodeHref)}`,
-        {
-          headers: { 'ngrok-skip-browser-warning': 'true' }
-        }
-      )
+  //   try {
+  //     const episodeHref = `https://anime3rb.com/episode/${animeId}/${episodeId}`
+  //     const response = await fetch(
+  //       `https://web-production-4b80.up.railway.app/getEpisodeSource?episodeHref=${encodeURIComponent(episodeHref)}`,
+  //       {
+  //         headers: { 'ngrok-skip-browser-warning': 'true' }
+  //       }
+  //     )
 
-      if (!response.ok) throw new Error(`Failed to fetch episode source (${response.status})`)
+  //     if (!response.ok) throw new Error(`Failed to fetch episode source (${response.status})`)
 
-      const data = await response.json()
+  //     const data = await response.json()
 
-      if (!data.episodeSrc) {
-        throw new Error('No video source was returned for this episode.')
-      }
+  //     if (!data.episodeSrc) {
+  //       throw new Error('No video source was returned for this episode.')
+  //     }
 
-      setUrl(`/api/video?url=${encodeURIComponent(data.episodeSrc)}`)
-    } catch (error) {
-      console.error('Error fetching episode source:', error)
-      setSourceError('Unable to load this episode. Please try another episode.')
-      setUrl('')
-    } finally {
-      setIsSourceLoading(false)
-    }
-  }, [animeId])
+  //     setUrl(`/api/video?url=${encodeURIComponent(data.episodeSrc)}`)
+  //   } catch (error) {
+  //     console.error('Error fetching episode source:', error)
+  //     setSourceError('Unable to load this episode. Please try another episode.')
+  //     setUrl('')
+  //   } finally {
+  //     setIsSourceLoading(false)
+  //   }
+  // }, [animeId])
 
   // Automatically load the first episode after the list is received.
   useEffect(() => {
@@ -137,39 +137,38 @@ export default function WatchPage() {
   }, [episodes, fetchEpisodeSource])
 
   // Load anime title and synopsis.
-  useEffect(() => {
-    if (!animeId) return
+  // useEffect(() => {
+  //   if (!animeId) return
 
-    const controller = new AbortController()
+  //   const controller = new AbortController()
 
-    const fetchAnimeInfo = async () => {
-      try {
-        const response = await fetch(
-          `https://YOUR_API_URL/getAnimeInfo.php?animeId=${encodeURIComponent(animeId)}`,
-          { signal: controller.signal }
-        )
+  //   const fetchAnimeInfo = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://YOUR_API_URL/getAnimeInfo.php?animeId=${encodeURIComponent(animeId)}`,
+  //         { signal: controller.signal }
+  //       )
 
-        if (!response.ok) throw new Error('Failed to fetch anime info')
+  //       if (!response.ok) throw new Error('Failed to fetch anime info')
 
-        const data = await response.json()
-        setDesc(data.synopsis || '')
-        setTitle(data.anime_name || '')
-      } catch (error) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Error fetching anime info:', error)
-        }
-      }
-    }
+  //       const data = await response.json()
+  //       setDesc(data.synopsis || '')
+  //       setTitle(data.anime_name || '')
+  //     } catch (error) {
+  //       if (error instanceof Error && error.name !== 'AbortError') {
+  //         console.error('Error fetching anime info:', error)
+  //       }
+  //     }
+  //   }
 
-    fetchAnimeInfo()
-    return () => controller.abort()
-  }, [animeId])
+  //   fetchAnimeInfo()
+  //   return () => controller.abort()
+  // }, [animeId])
 
-  const handleEpisodeChange = (episode: Episode) => {
+  const handleEpisodeChange = (episode) => {
     if (episode.id === selectedEpisode) return
-
+    setUrl(`https://megaplay.buzz/stream/mal/16498/${episode}/sub`)
     setSelectedEpisode(episode.id)
-    fetchEpisodeSource(episode.id)
     // Keep the selected episode visible if it belongs to another page.
     const episodeIndex = episodes.findIndex(item => item.id === episode.id)
     if (episodeIndex >= 0) {
@@ -268,14 +267,14 @@ export default function WatchPage() {
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-                {currentEpisodes.map((episode) => {
+                {currentEpisodes.map((episode, index) => {
                   const isSelected = selectedEpisode === episode.id
 
                   return (
                     <button
                       key={episode.id}
                       type="button"
-                      onClick={() => handleEpisodeChange(episode)}
+                      onClick={() => handleEpisodeChange( ( currentPage - 1 ) * 12 + index + 1)}
                       aria-pressed={isSelected}
                       className={`group relative min-w-0 overflow-hidden rounded-lg border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                         isSelected
