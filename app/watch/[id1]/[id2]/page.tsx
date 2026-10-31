@@ -165,11 +165,13 @@ export default function WatchPage() {
   // }, [animeId])
 
   const handleEpisodeChange = (episodeNumber: number) => {
+  const newUrl = `https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`;
+
+  console.log('Changing episode:', episodeNumber);
+  console.log('New iframe URL:', newUrl);
+
   setSelectedEpisode(episodeNumber);
-  setSourceError('');
-  setUrl(
-    `https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`
-  );
+  setUrl(newUrl);
 };
 useEffect(() => {
   if (episodes.length === 0 || !animeId) return;
