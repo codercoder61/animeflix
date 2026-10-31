@@ -167,8 +167,6 @@ export default function WatchPage() {
   const handleEpisodeChange = (episodeNumber: number) => {
   const newUrl = `https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`;
 
-  console.log('Changing episode:', episodeNumber);
-  console.log('New iframe URL:', newUrl);
 
   setSelectedEpisode(episodeNumber);
   setUrl(newUrl);
