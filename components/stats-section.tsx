@@ -26,7 +26,7 @@ export default function StatsSection() {
       },
       {
         label: 'Episodes Available',
-        value: '161K+',
+        value: '161K',
         icon: <Play size={32} />,
         suffix: '+',
       },
