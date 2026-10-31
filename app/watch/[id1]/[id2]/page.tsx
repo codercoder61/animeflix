@@ -133,8 +133,7 @@ export default function WatchPage() {
 
     const firstEpisode = episodes[0]
     setSelectedEpisode(firstEpisode.id)
-    fetchEpisodeSource(firstEpisode.id)
-  }, [episodes, fetchEpisodeSource])
+  }, [episodes])
 
   // Load anime title and synopsis.
   // useEffect(() => {
