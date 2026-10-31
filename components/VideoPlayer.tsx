@@ -39,20 +39,7 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
-      {loading && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          zIndex: 10
-        }}>
-          Loading video…
-        </div>
-      )}
+
 
       <div data-vjs-player style={{ width: '100%', maxWidth: '1200px' }}>
         <iframe 
