@@ -71,7 +71,7 @@ export default function WatchPage() {
 
       try {
         const response = await fetch(
-          `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/getEpisodes.php?id=${encodeURIComponent(animeId2)}`,
+          `https://pneuexpress.online/anime_gang/getEpisodes.php?id=${encodeURIComponent(animeId2)}`,
           { signal: controller.signal }
         )
 
