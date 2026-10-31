@@ -198,7 +198,15 @@ useEffect(() => {
           <div className="relative w-full aspect-video min-h-[220px] sm:min-h-0 bg-black rounded-xl overflow-hidden shadow-lg">
             {url ? (
               <div className="absolute inset-0 w-full h-full [&_iframe]:!absolute [&_iframe]:!inset-0 [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!border-0 [&_video]:!w-full [&_video]:!h-full">
-                <VideoPlayer key={url} url={url} />
+                <iframe
+  key={url}
+  src={url}
+  title="Video player"
+  className="absolute inset-0 w-full h-full border-0"
+  allow="autoplay; fullscreen; picture-in-picture"
+  allowFullScreen
+  scrolling="no"
+/>
               </div>
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white">
