@@ -51,7 +51,7 @@ export default function SearchBar() {
       setError(false)
 
       try {
-        const url = `https://causing-recording-remark-lid.trycloudflare.com/animeGangsters/search.php?query=${encodeURIComponent(trimmedQuery)}`
+        const url = `https://pneuexpress.online/anime_gang/search.php?query=${encodeURIComponent(trimmedQuery)}`
 
         const response = await fetch(url, {
           signal: controller.signal
