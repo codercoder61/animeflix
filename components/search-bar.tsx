@@ -63,9 +63,6 @@ export default function SearchBar() {
 
         const data = await response.json()
 
-        console.log("Search query:", trimmedQuery)
-        console.log("API response:", data)
-        console.log("Is array:", Array.isArray(data))
         
         if (requestId === latestRequestId.current) {
           setSuggestions(Array.isArray(data) ? data : [])
@@ -181,7 +178,6 @@ export default function SearchBar() {
   const match = anime.animeUrl?.match(/\/anime\/(?:kitsu:)?(\d+)-/)
   const animeId = match?.[1]
   const animeId2 = anime.id
-  console.log(animeId)
   if (!animeId) {
     console.warn('Invalid anime URL:', anime.animeUrl)
     return null
