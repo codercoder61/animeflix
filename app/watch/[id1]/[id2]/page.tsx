@@ -52,7 +52,7 @@ export default function WatchPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [desc, setDesc] = useState('')
   const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`)
 
   const episodesPerPage = 12
   const totalPages = Math.ceil(episodes.length / episodesPerPage)
@@ -166,6 +166,7 @@ export default function WatchPage() {
 
   const handleEpisodeChange = (episode) => {
     if (episode.id === selectedEpisode) return
+    setSelectedEpisode(episode)
     setUrl(`https://megaplay.buzz/stream/mal/16498/${episode}/sub`)
     setSelectedEpisode(episode.id)
     // Keep the selected episode visible if it belongs to another page.
