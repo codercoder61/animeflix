@@ -41,20 +41,21 @@ export default function VideoPlayer({ url, poster }: VideoPlayerProps) {
     }}>
 
 
-      <div className="relative w-full aspect-video max-w-[1200px] mx-auto overflow-hidden bg-black">
-        <iframe 
-    className="absolute inset-0 w-full h-full border-0"
-          poster={poster}
-          playsInline
-          src={url}
-          width="100%" 
-          height="100%" 
-          title="Video player"
-    allow="autoplay; fullscreen; picture-in-picture"
-    allowFullScreen
-    scrolling="no">
-        </iframe>
-      </div>
+     
+
+
+  <div class="relative w-full aspect-video min-h-[220px] bg-black rounded-xl overflow-hidden shadow-lg">
+    <iframe
+      class="absolute inset-0 w-full h-full border-0"
+      src="https://megaplay.buzz/stream/mal/16498/2/sub"
+      title="Video player"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+      scrolling="no"
+    ></iframe>
+  </div>
+
+      
     </div>
   )
 }
