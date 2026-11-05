@@ -8,6 +8,7 @@ import { ChevronLeft, Loader, Play } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import VideoPlayer from '../../../../components/VideoPlayer'
 import BookmarkButton from '@/components/bookmark-button'
+import { animeData } from '@/lib/anime-data'
 
 interface Episode {
   id: number
@@ -45,6 +46,8 @@ export default function WatchPage() {
   const searchParams = useSearchParams()
   const animeId = params.id1
   const animeId2 = params.id2
+  const animeInfo = animeData.find((anime) => anime.id === `${animeId}/${animeId2}`)
+  const animeName = animeInfo?.title ?? 'Saved anime'
 
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(null)
   const [episodes, setEpisodes] = useState<Episode[]>([])
@@ -169,7 +172,7 @@ export default function WatchPage() {
 useEffect(() => {
   if (episodes.length === 0 || !animeId) return
 
-  const requestedEpisode = Number(searchParams.get('episode'))
+  const requestedEpisode = Number.parseInt(searchParams.get('episode') ?? '', 10)
   const episodeNumber = Number.isInteger(requestedEpisode) && requestedEpisode >= 1 && requestedEpisode <= episodes.length
     ? requestedEpisode
     : 1
@@ -262,7 +265,7 @@ useEffect(() => {
             </div>
             {selectedEpisode !== null && (
               <div className="flex items-center gap-2">
-                {selectedEpisode !== null && <BookmarkButton item={{ type: 'episode', id: `${animeId2}-${selectedEpisode}`, animeId: `${animeId}/${animeId2}`, animeName: title || `Anime ${animeId}`, episodeNumber: selectedEpisode, image: episodes.find((episode) => episode.id === selectedEpisode)?.image_episode }} label="Save episode" />}
+                {selectedEpisode !== null && <BookmarkButton item={{ type: 'episode', id: `${animeId}/${animeId2}-${selectedEpisode}`, animeId: `${animeId}/${animeId2}`, animeName: animeName, episodeNumber: selectedEpisode, image: episodes.find((episode) => episode.id === selectedEpisode)?.image_episode }} label="Save episode" />}
                 {selectedEpisode !== null && <span className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1 font-semibold">Selected: {selectedEpisode}</span>}
               </div>
             )}
