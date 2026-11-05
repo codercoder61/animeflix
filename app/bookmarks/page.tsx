@@ -28,11 +28,13 @@ export default function BookmarksPage() {
           <div><h1 className="text-3xl font-bold">My Bookmarks</h1><p className="text-muted-foreground">Your saved anime and episodes, stored in this browser.</p></div>
         </div>
         {bookmarks.length === 0 ? <div className="rounded-xl border border-dashed border-border py-16 text-center text-muted-foreground">No bookmarks yet. Save an anime or episode to find it here.</div> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">{bookmarks.map((bookmark) => {
-          const episodeName = bookmark.type === 'episode' ? (bookmark.animeName ?? bookmark.animeTitle ?? 'Saved anime') : ''
-          const matchedAnime = bookmark.type === 'episode'
-            ? animeData.find((anime) => anime.title === episodeName)
-            : undefined
           const episodePath = bookmark.type === 'episode' ? bookmark.animeId.split('/') : []
+          const matchedAnime = bookmark.type === 'episode'
+            ? animeData.find((anime) => anime.id === bookmark.animeId) ?? animeData.find((anime) => anime.title === (bookmark.animeName ?? bookmark.animeTitle))
+            : undefined
+          const episodeName = bookmark.type === 'episode'
+            ? (bookmark.animeName ?? bookmark.animeTitle ?? matchedAnime?.title ?? 'Saved anime')
+            : ''
           const route = matchedAnime?.id ?? (episodePath.length === 2 ? bookmark.animeId : '')
           const [routeId, routeAnimeId] = route.split('/')
           const href = bookmark.type === 'episode' && routeId && routeAnimeId
