@@ -5,41 +5,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react'
+import BookmarkButton from '@/components/bookmark-button'
+import { animeData } from '@/lib/anime-data'
 
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import StatsSection from '@/components/stats-section'
-
-const animeData = [
-  {
-    id: '16498/1',
-    title: 'Attack on Titan',
-    description: 'Humanity fights for survival against giant humanoid creatures',
-    image: '/images/aot.png',
-    episodes: 25,
-  },
-  {
-    id: '38000/2',
-    title: 'Demon Slayer',
-    description: 'A young man joins demon slayers to save his sister',
-    image: '/images/ds.jpg',
-    episodes: 26,
-  },
-  {
-    id: '40748/3',
-    title: 'Jujutsu Kaisen',
-    description: 'A teenager swallows a cursed finger and joins a secret organization',
-    image: '/images/jk.jfif',
-    episodes: 24,
-  },
-  {
-    id: '21/8',
-    title: 'One Piece',
-    description: 'A pirate embarks on adventures to find the ultimate treasure',
-    image: '/images/op.jpg',
-    episodes: 1151,
-  },
-]
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -108,13 +79,16 @@ export default function Home() {
                     {anime.description}
                   </p>
 
-                  <Link
-                    href={`/watch/${anime.id}`}
-                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    <Play size={20} />
-                    Watch Episodes
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Link
+                      href={`/watch/${anime.id}`}
+                      className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      <Play size={20} />
+                      Watch Episodes
+                    </Link>
+                    <BookmarkButton item={{ type: 'anime', id: anime.id, title: anime.title, image: anime.image }} />
+                  </div>
 
                 </div>
               </div>
@@ -199,9 +173,12 @@ export default function Home() {
                 {/* Anime Information */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
 
-                  <h3 className="font-bold text-lg text-white group-hover:text-primary transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-bold text-lg text-white group-hover:text-primary transition-colors">
                     {anime.title}
-                  </h3>
+                    </h3>
+                    <BookmarkButton item={{ type: 'anime', id: anime.id, title: anime.title, image: anime.image }} label="Save" />
+                  </div>
 
                   <p className="text-sm text-gray-300">
                     {anime.episodes} episodes
