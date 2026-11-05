@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { ChevronLeft, Loader, Play } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import VideoPlayer from '../../../../components/VideoPlayer'
 import BookmarkButton from '@/components/bookmark-button'
 
@@ -42,6 +42,7 @@ const getPaginationRange = (
 
 export default function WatchPage() {
   const params = useParams<{ id1: string; id2: string }>()
+  const searchParams = useSearchParams()
   const animeId = params.id1
   const animeId2 = params.id2
 
@@ -128,13 +129,6 @@ export default function WatchPage() {
   //   }
   // }, [animeId])
 
-  // Automatically load the first episode after the list is received.
-  useEffect(() => {
-    if (episodes.length === 0) return
-
-    const firstEpisode = episodes[0]
-    setSelectedEpisode(firstEpisode.id)
-  }, [episodes])
 
   // Load anime title and synopsis.
   // useEffect(() => {
@@ -173,11 +167,16 @@ export default function WatchPage() {
   setUrl(newUrl);
 };
 useEffect(() => {
-  if (episodes.length === 0 || !animeId) return;
+  if (episodes.length === 0 || !animeId) return
 
-  setSelectedEpisode(1);
-  setUrl(`https://megaplay.buzz/stream/mal/${animeId}/1/sub`);
-}, [episodes, animeId]);
+  const requestedEpisode = Number(searchParams.get('episode'))
+  const episodeNumber = Number.isInteger(requestedEpisode) && requestedEpisode >= 1 && requestedEpisode <= episodes.length
+    ? requestedEpisode
+    : 1
+
+  setSelectedEpisode(episodeNumber)
+  setUrl(`https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`)
+}, [episodes, animeId, searchParams]);
   const startIndex = (currentPage - 1) * episodesPerPage
   const currentEpisodes = episodes.slice(startIndex, startIndex + episodesPerPage)
 
