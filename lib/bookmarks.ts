@@ -9,7 +9,8 @@ export type EpisodeBookmark = {
   type: 'episode'
   id: string
   animeId: string
-  animeTitle: string
+  animeName: string
+  animeTitle?: string
   episodeNumber: number
   image?: string
 }

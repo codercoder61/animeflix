@@ -262,7 +262,7 @@ useEffect(() => {
             </div>
             {selectedEpisode !== null && (
               <div className="flex items-center gap-2">
-                {selectedEpisode !== null && <BookmarkButton item={{ type: 'episode', id: `${animeId2}-${selectedEpisode}`, animeId: `${animeId}/${animeId2}`, animeTitle: title || `Anime ${animeId}`, episodeNumber: selectedEpisode, image: episodes.find((episode) => episode.id === selectedEpisode)?.image_episode }} label="Save episode" />}
+                {selectedEpisode !== null && <BookmarkButton item={{ type: 'episode', id: `${animeId2}-${selectedEpisode}`, animeId: `${animeId}/${animeId2}`, animeName: title || `Anime ${animeId}`, episodeNumber: selectedEpisode, image: episodes.find((episode) => episode.id === selectedEpisode)?.image_episode }} label="Save episode" />}
                 {selectedEpisode !== null && <span className="text-xs rounded-full bg-primary/10 text-primary px-3 py-1 font-semibold">Selected: {selectedEpisode}</span>}
               </div>
             )}
