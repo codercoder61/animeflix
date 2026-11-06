@@ -7,6 +7,7 @@ import Footer from '@/components/footer'
 import { ChevronLeft, Loader, Play } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
 import BookmarkButton from '@/components/bookmark-button'
+import WatchedButton from '@/components/watched-button'
 import { animeData } from '@/lib/anime-data'
 
 interface Episode {
@@ -379,17 +380,21 @@ useEffect(() => {
   const isSelected = selectedEpisode === episodeNumber;
 
   return (
-    <button
+    <div
       key={episode.id}
-      type="button"
-      onClick={() => handleEpisodeChange(episodeNumber)}
-      aria-pressed={isSelected}
       className={`group relative min-w-0 overflow-hidden rounded-lg border text-left transition-all ${
         isSelected
           ? 'border-primary ring-2 ring-primary shadow-md'
           : 'border-border hover:border-primary/70'
       }`}
     >
+      <button
+        type="button"
+        onClick={() => handleEpisodeChange(episodeNumber)}
+        aria-pressed={isSelected}
+        aria-label={`Play episode ${episodeNumber}`}
+        className="block w-full text-left"
+      >
       <div className="relative aspect-video bg-muted overflow-hidden">
         <img
           src={episode.image_episode || '/placeholder.svg'}
@@ -420,7 +425,9 @@ useEffect(() => {
           {episode.name_episode || `Episode ${episodeNumber}`}
         </p>
       </div>
-    </button>
+      </button>
+      <WatchedButton episodeId={`${animeId}/${animeId2}-${episodeNumber}`} />
+    </div>
   );
 })}
               </div>
