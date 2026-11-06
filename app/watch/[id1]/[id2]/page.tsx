@@ -502,9 +502,10 @@ useEffect(() => {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {relatedAnime.map((anime, index) => {
                   const relatedId = anime.id ?? anime.anime_id ?? anime.malId
+                  const animeId = anime.animeUrl.match(/\/anime\/(\d+)/)?.[1];
                   const relatedTitle = anime.title ?? anime.anime_name ?? anime.name ?? 'Related anime'
                   const image = anime.image ?? anime.anime_image ?? anime.poster ?? '/placeholder.svg'
-                  const href = relatedId != null ? `/watch/${relatedId}/1` : '#'
+                  const href = relatedId != null ? `/watch/${animeId}/${relatedId}` : '#'
 
                   return (
                     <Link
