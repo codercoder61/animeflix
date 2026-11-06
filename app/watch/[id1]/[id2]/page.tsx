@@ -83,7 +83,7 @@ export default function WatchPage() {
         if (!response.ok) throw new Error(`Failed to fetch episodes (${response.status})`)
 
         const data: Episode[] = await response.json()
-        setEpisodes(Array.isArray(data) ? data : [])
+        setEpisodes(Array.isArray(data.episodes) ? data.episodes : [])
         setCurrentPage(1)
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
