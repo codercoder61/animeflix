@@ -23,6 +23,41 @@ interface EpisodesResponse {
   }
 }
 
+interface RelatedAnime {
+  id?: number | string
+  malId?: number | string
+  anime_id?: number | string
+  title?: string
+  anime_name?: string
+  name?: string
+  image?: string
+  anime_image?: string
+  poster?: string
+  relation?: string
+  relation_type?: string
+}
+
+interface AnimeCharacter {
+  id?: number | string
+  name?: string
+  character_name?: string
+  role?: string
+  image?: string
+  character_image?: string
+}
+
+const getList = <T,>(data: unknown, keys: string[]): T[] => {
+  if (Array.isArray(data)) return data as T[]
+  if (!data || typeof data !== 'object') return []
+
+  for (const key of keys) {
+    const value = (data as Record<string, unknown>)[key]
+    if (Array.isArray(value)) return value as T[]
+  }
+
+  return []
+}
+
 const getPaginationRange = (
   totalPages: number,
   currentPage: number,
@@ -65,6 +100,10 @@ export default function WatchPage() {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState("")
   const [malId, setMalId] = useState<string | null>(null)
+  const [relatedAnime, setRelatedAnime] = useState<RelatedAnime[]>([])
+  const [characters, setCharacters] = useState<AnimeCharacter[]>([])
+  const [activeTab, setActiveTab] = useState<'related' | 'characters'>('related')
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false)
 
   const episodesPerPage = 12
   const totalPages = Math.ceil(episodes.length / episodesPerPage)
@@ -108,6 +147,45 @@ export default function WatchPage() {
     }
 
     fetchEpisodes()
+    return () => controller.abort()
+  }, [animeId2])
+
+  useEffect(() => {
+    if (!animeId2) return
+
+    const controller = new AbortController()
+    const fetchDetails = async () => {
+      setIsDetailsLoading(true)
+      try {
+        const encodedId = encodeURIComponent(animeId2)
+        const [relatedResponse, charactersResponse] = await Promise.all([
+          fetch(`https://pneuexpress.online/anime_gang/getRelatedAnime.php?id=${encodedId}`, { signal: controller.signal }),
+          fetch(`https://pneuexpress.online/anime_gang/getAnimeCharacters.php?id=${encodedId}`, { signal: controller.signal }),
+        ])
+
+        if (!relatedResponse.ok || !charactersResponse.ok) {
+          throw new Error('Failed to fetch anime details')
+        }
+
+        const [relatedData, charactersData] = await Promise.all([
+          relatedResponse.json(),
+          charactersResponse.json(),
+        ])
+
+        setRelatedAnime(getList<RelatedAnime>(relatedData, ['relatedAnime', 'related_anime', 'relations', 'data']))
+        setCharacters(getList<AnimeCharacter>(charactersData, ['characters', 'data']))
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Error fetching anime details:', error)
+          setRelatedAnime([])
+          setCharacters([])
+        }
+      } finally {
+        if (!controller.signal.aborted) setIsDetailsLoading(false)
+      }
+    }
+
+    fetchDetails()
     return () => controller.abort()
   }, [animeId2])
 
@@ -388,6 +466,102 @@ useEffect(() => {
                 </nav>
               )}
             </>
+          )}
+        </section>
+
+        <section className="mt-6 bg-card border border-border rounded-xl p-4 sm:p-5">
+          <div role="tablist" aria-label="Anime information" className="flex gap-2 border-b border-border mb-5">
+            {([
+              ['related', 'Related anime'],
+              ['characters', 'Characters'],
+            ] as const).map(([tab, label]) => (
+              <button
+                key={tab}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-2 text-sm font-semibold border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {isDetailsLoading ? (
+            <div className="flex justify-center py-8" aria-label="Loading anime information">
+              <Loader size={24} className="animate-spin text-primary" />
+            </div>
+          ) : activeTab === 'related' ? (
+            relatedAnime.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {relatedAnime.map((anime, index) => {
+                  const relatedId = anime.id ?? anime.anime_id ?? anime.malId
+                  const relatedTitle = anime.title ?? anime.anime_name ?? anime.name ?? 'Related anime'
+                  const image = anime.image ?? anime.anime_image ?? anime.poster ?? '/placeholder.svg'
+                  const href = relatedId != null ? `/watch/${relatedId}/1` : '#'
+
+                  return (
+                    <Link
+                      key={`${relatedId ?? relatedTitle}-${index}`}
+                      href={href}
+                      className="group overflow-hidden rounded-lg border border-border hover:border-primary/70 transition-colors"
+                    >
+                      <img
+                        src={image}
+                        alt={relatedTitle}
+                        onError={(event) => {
+                          event.currentTarget.src = '/placeholder.svg'
+                        }}
+                        className="aspect-[2/3] w-full object-cover bg-muted"
+                        loading="lazy"
+                      />
+                      <div className="p-2">
+                        <p className="font-semibold text-sm line-clamp-2">{relatedTitle}</p>
+                        {(anime.relation ?? anime.relation_type) && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                            {anime.relation ?? anime.relation_type}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-8">No related anime available.</p>
+            )
+          ) : characters.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {characters.map((character, index) => {
+                const characterName = character.name ?? character.character_name ?? 'Unknown character'
+                const image = character.image ?? character.character_image ?? '/placeholder.svg'
+
+                return (
+                  <div key={`${character.id ?? characterName}-${index}`} className="flex items-center gap-3 rounded-lg border border-border p-2">
+                    <img
+                      src={image}
+                      alt={characterName}
+                      onError={(event) => {
+                        event.currentTarget.src = '/placeholder.svg'
+                      }}
+                      className="size-12 rounded-md object-cover bg-muted shrink-0"
+                      loading="lazy"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-semibold text-sm line-clamp-2">{characterName}</p>
+                      {character.role && <p className="text-xs text-muted-foreground mt-1">{character.role}</p>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground py-8">No character information available.</p>
           )}
         </section>
       </main>
