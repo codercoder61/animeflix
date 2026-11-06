@@ -1,12 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { ChevronLeft, Loader, Play } from 'lucide-react'
 import { useParams, useSearchParams } from 'next/navigation'
-import VideoPlayer from '../../../../components/VideoPlayer'
 import BookmarkButton from '@/components/bookmark-button'
 import { animeData } from '@/lib/anime-data'
 
@@ -15,6 +14,13 @@ interface Episode {
   name_episode: string
   image_episode: string
   anime_title_id: number
+}
+
+interface EpisodesResponse {
+  episodes: Episode[]
+  anime_title?: {
+    malId?: number | string | null
+  }
 }
 
 const getPaginationRange = (
@@ -58,6 +64,7 @@ export default function WatchPage() {
   const [desc, setDesc] = useState('')
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState("")
+  const [malId, setMalId] = useState<string | null>(null)
 
   const episodesPerPage = 12
   const totalPages = Math.ceil(episodes.length / episodesPerPage)
@@ -72,6 +79,7 @@ export default function WatchPage() {
       setIsLoading(true)
       setEpisodes([])
       setSelectedEpisode(null)
+      setMalId(null)
       setUrl('')
 
       try {
@@ -82,8 +90,12 @@ export default function WatchPage() {
 
         if (!response.ok) throw new Error(`Failed to fetch episodes (${response.status})`)
 
-        const data: Episode[] = await response.json()
-        setEpisodes(Array.isArray(data.episodes) ? data.episodes : [])
+        const data: EpisodesResponse | Episode[] = await response.json()
+        const episodeList = Array.isArray(data) ? data : data.episodes
+        const responseMalId = Array.isArray(data) ? null : data.anime_title?.malId
+
+        setEpisodes(Array.isArray(episodeList) ? episodeList : [])
+        setMalId(responseMalId != null ? String(responseMalId) : null)
         setCurrentPage(1)
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
@@ -163,14 +175,15 @@ export default function WatchPage() {
   // }, [animeId])
 
   const handleEpisodeChange = (episodeNumber: number) => {
-  const newUrl = `https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`;
+    const streamId = malId ?? animeId
+    const newUrl = `https://megaplay.buzz/stream/mal/${streamId}/${episodeNumber}/sub`
 
+    setSelectedEpisode(episodeNumber)
+    setUrl(newUrl)
+  }
 
-  setSelectedEpisode(episodeNumber);
-  setUrl(newUrl);
-};
 useEffect(() => {
-  if (episodes.length === 0 || !animeId) return
+  if (episodes.length === 0 || (!animeId && !malId)) return
 
   const requestedEpisode = Number.parseInt(searchParams.get('episode') ?? '', 10)
   const episodeNumber = Number.isInteger(requestedEpisode) && requestedEpisode >= 1 && requestedEpisode <= episodes.length
@@ -179,8 +192,9 @@ useEffect(() => {
 
   setSelectedEpisode(episodeNumber)
   setCurrentPage(Math.ceil(episodeNumber / episodesPerPage))
-  setUrl(`https://megaplay.buzz/stream/mal/${animeId}/${episodeNumber}/sub`)
-}, [episodes, animeId, searchParams]);
+  const streamId = malId ?? animeId
+  setUrl(`https://megaplay.buzz/stream/mal/${streamId}/${episodeNumber}/sub`)
+}, [episodes, animeId, malId, searchParams]);
   const startIndex = (currentPage - 1) * episodesPerPage
   const currentEpisodes = episodes.slice(startIndex, startIndex + episodesPerPage)
 
