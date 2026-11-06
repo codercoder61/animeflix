@@ -42,6 +42,7 @@ interface AnimeCharacter {
   name?: string
   character_name?: string
   role?: string
+  image_url?: string
   image?: string
   character_image?: string
 }
@@ -539,7 +540,7 @@ useEffect(() => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {characters.map((character, index) => {
                 const characterName = character.name ?? character.character_name ?? 'Unknown character'
-                const image = character.image ?? character.character_image ?? '/placeholder.svg'
+                const image = character.image_url ?? character.image ?? character.character_image ?? '/placeholder.svg'
 
                 return (
                   <div key={`${character.id ?? characterName}-${index}`} className="flex items-center gap-3 rounded-lg border border-border p-2">
