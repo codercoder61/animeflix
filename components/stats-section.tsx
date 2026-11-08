@@ -20,7 +20,7 @@ export default function StatsSection() {
     const statsData: Stat[] = [
       {
         label: 'Anime Series',
-        value: '9K',
+        value: '9,8K',
         icon: <Tv size={32} />,
         suffix: '+',
       },
