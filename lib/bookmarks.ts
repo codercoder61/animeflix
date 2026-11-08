@@ -38,9 +38,15 @@ export function isBookmarked(id: string): boolean {
 export function toggleBookmark(bookmark: Bookmark): boolean {
   const bookmarks = getBookmarks()
   const exists = bookmarks.some((item) => item.id === bookmark.id)
+
   const next = exists
     ? bookmarks.filter((item) => item.id !== bookmark.id)
-    : [...bookmarks, bookmark]
+    : [
+        ...bookmarks.filter(
+          (item) => item.type !== 'episode' || bookmark.type !== 'episode' || item.animeId !== bookmark.animeId
+        ),
+        bookmark,
+      ]
 
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
   window.dispatchEvent(new CustomEvent('animeflix-bookmarks-changed'))
