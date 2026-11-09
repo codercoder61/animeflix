@@ -388,7 +388,7 @@ useEffect(() => {
                   {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.genres}</span>}
                 </div>
                 {getTrailerEmbedUrl(animeTitle.trailer) && (
-                  <section className="mt-5 w-full max-w-3xl" aria-labelledby="trailer-heading">
+                  <section className="mt-5 w-full max-w-[24rem]" aria-labelledby="trailer-heading">
                     <h2 id="trailer-heading" className="mb-3 text-lg font-bold">Trailer</h2>
                     <div className="relative aspect-video overflow-hidden rounded-xl bg-black shadow-lg">
                       <iframe
