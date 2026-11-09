@@ -74,6 +74,24 @@ const getList = <T,>(data: unknown, keys: string[]): T[] => {
   return []
 }
 
+const getTrailerEmbedUrl = (trailer?: string) => {
+  if (!trailer) return null
+
+  try {
+    const url = new URL(trailer)
+    const videoId = url.hostname.includes('youtu.be')
+      ? url.pathname.slice(1)
+      : url.searchParams.get('v')
+
+    if (videoId) return `https://www.youtube.com/embed/${videoId}`
+    if (url.pathname.includes('/embed/')) return trailer
+  } catch {
+    return null
+  }
+
+  return null
+}
+
 const getPaginationRange = (
   totalPages: number,
   currentPage: number,
@@ -369,15 +387,19 @@ useEffect(() => {
                   {animeTitle.studio && <span className="rounded-full bg-muted px-3 py-1">Studio: {animeTitle.studio}</span>}
                   {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.genres}</span>}
                 </div>
-                {animeTitle.trailer && (
-                  <a
-                    href={animeTitle.trailer}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-4 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-                  >
-                    Watch trailer
-                  </a>
+                {getTrailerEmbedUrl(animeTitle.trailer) && (
+                  <section className="mt-5 w-full max-w-3xl" aria-labelledby="trailer-heading">
+                    <h2 id="trailer-heading" className="mb-3 text-lg font-bold">Trailer</h2>
+                    <div className="relative aspect-video overflow-hidden rounded-xl bg-black shadow-lg">
+                      <iframe
+                        src={getTrailerEmbedUrl(animeTitle.trailer) ?? undefined}
+                        title={`${animeTitle.anime_name ?? 'Anime'} trailer`}
+                        className="absolute inset-0 h-full w-full border-0"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  </section>
                 )}
               </div>
             </div>
