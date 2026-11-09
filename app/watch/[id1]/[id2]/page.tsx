@@ -365,9 +365,20 @@ useEffect(() => {
                 <div className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
                   {animeTitle.rating && <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">Rating {animeTitle.rating}</span>}
                   {animeTitle.airYear && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.airYear}</span>}
-                  {animeTitle.status && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.status}</span>}
+                  {animeTitle.status && <span className="rounded-full bg-muted px-3 py-1">Status: {animeTitle.status}</span>}
+                  {animeTitle.studio && <span className="rounded-full bg-muted px-3 py-1">Studio: {animeTitle.studio}</span>}
                   {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.genres}</span>}
                 </div>
+                {animeTitle.trailer && (
+                  <a
+                    href={animeTitle.trailer}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    Watch trailer
+                  </a>
+                )}
               </div>
             </div>
           )}
