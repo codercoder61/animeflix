@@ -17,11 +17,25 @@ interface Episode {
   anime_title_id: number
 }
 
+interface AnimeTitle {
+  id?: number | string
+  anime_name?: string
+  rating?: string | number | null
+  num_episodes?: string | number | null
+  animeUrl?: string
+  genres?: string
+  anime_image?: string
+  airYear?: string | number | null
+  trailer?: string
+  studio?: string
+  synopsis?: string
+  status?: string
+  malId?: number | string | null
+}
+
 interface EpisodesResponse {
   episodes: Episode[]
-  anime_title?: {
-    malId?: number | string | null
-  }
+  anime_title?: AnimeTitle
 }
 
 interface RelatedAnime {
@@ -98,8 +112,7 @@ export default function WatchPage() {
   const [isSourceLoading, setIsSourceLoading] = useState(false)
   const [sourceError, setSourceError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [desc, setDesc] = useState('')
-  const [title, setTitle] = useState('')
+  const [animeTitle, setAnimeTitle] = useState<AnimeTitle | null>(null)
   const [url, setUrl] = useState("")
   const [malId, setMalId] = useState<string | null>(null)
   const [relatedAnime, setRelatedAnime] = useState<RelatedAnime[]>([])
@@ -120,12 +133,13 @@ export default function WatchPage() {
       setIsLoading(true)
       setEpisodes([])
       setSelectedEpisode(null)
+      setAnimeTitle(null)
       setMalId(null)
       setUrl('')
 
       try {
         const response = await fetch(
-          `https://pneuexpress.online/anime_gang/getEpisodes.php?id=${encodeURIComponent(animeId2)}`,
+          `/api/episodes?animeId=${encodeURIComponent(animeId2)}`,
           { signal: controller.signal }
         )
 
@@ -133,9 +147,11 @@ export default function WatchPage() {
 
         const data: EpisodesResponse | Episode[] = await response.json()
         const episodeList = Array.isArray(data) ? data : data.episodes
-        const responseMalId = Array.isArray(data) ? null : data.anime_title?.malId
+        const responseAnimeTitle = Array.isArray(data) ? null : data.anime_title
+        const responseMalId = responseAnimeTitle?.malId
 
         setEpisodes(Array.isArray(episodeList) ? episodeList : [])
+        setAnimeTitle(responseAnimeTitle ?? null)
         setMalId(responseMalId != null ? String(responseMalId) : null)
         setCurrentPage(1)
       } catch (error) {
@@ -332,9 +348,31 @@ useEffect(() => {
 
         {/* Anime details and current episode */}
         <section className="mb-7">
-          {title && <h1 className="text-2xl sm:text-3xl font-bold mb-3">{title}</h1>}
+          {animeTitle && (
+            <div className="flex flex-col gap-5 sm:flex-row">
+              {animeTitle.anime_image && (
+                <img
+                  src={animeTitle.anime_image}
+                  alt={`${animeTitle.anime_name ?? 'Anime'} poster`}
+                  onError={(event) => {
+                    event.currentTarget.src = '/placeholder.svg'
+                  }}
+                  className="h-40 w-28 rounded-lg object-cover shadow-md"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl sm:text-3xl font-bold">{animeTitle.anime_name}</h1>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
+                  {animeTitle.rating && <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">Rating {animeTitle.rating}</span>}
+                  {animeTitle.airYear && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.airYear}</span>}
+                  {animeTitle.status && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.status}</span>}
+                  {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.genres}</span>}
+                </div>
+              </div>
+            </div>
+          )}
 
-          <div className="flex flex-wrap items-center gap-3 mb-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3 mb-3">
             <div className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2">
               <Play size={16} className="text-primary" />
               <span className="text-sm text-muted-foreground">Now playing</span>
@@ -344,9 +382,9 @@ useEffect(() => {
             </div>
           </div>
 
-          {desc && (
-            <p dir="rtl" className="text-justify text-sm sm:text-base leading-7 text-muted-foreground">
-              {desc}
+          {animeTitle?.synopsis && (
+            <p className="text-justify text-sm sm:text-base leading-7 text-muted-foreground">
+              {animeTitle.synopsis}
             </p>
           )}
         </section>
