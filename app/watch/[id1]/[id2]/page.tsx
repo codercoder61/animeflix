@@ -365,60 +365,64 @@ useEffect(() => {
         </section>
 
         {/* Anime details and current episode */}
-        <section className="mb-7">
+        <section className="mb-8 space-y-5">
           {animeTitle && (
-            <div className="flex flex-col gap-5 sm:flex-row">
-              {animeTitle.anime_image && (
-                <img
-                  src={animeTitle.anime_image}
-                  alt={`${animeTitle.anime_name ?? 'Anime'} poster`}
-                  onError={(event) => {
-                    event.currentTarget.src = '/placeholder.svg'
-                  }}
-                  className="h-40 w-28 rounded-lg object-cover shadow-md"
-                />
-              )}
-              <div className="min-w-0 flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold">{animeTitle.anime_name}</h1>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
-                  {animeTitle.rating && <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">Rating {animeTitle.rating}</span>}
-                  {animeTitle.airYear && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.airYear}</span>}
-                  {animeTitle.status && <span className="rounded-full bg-muted px-3 py-1">Status: {animeTitle.status}</span>}
-                  {animeTitle.studio && <span className="rounded-full bg-muted px-3 py-1">Studio: {animeTitle.studio}</span>}
-                  {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1">{animeTitle.genres}</span>}
-                </div>
-                {getTrailerEmbedUrl(animeTitle.trailer) && (
-                  <section className="mt-5 w-full max-w-[24rem]" aria-labelledby="trailer-heading">
-                    <h2 id="trailer-heading" className="mb-3 text-lg font-bold">Trailer</h2>
-                    <div className="relative aspect-video overflow-hidden rounded-xl bg-black shadow-lg">
-                      <iframe
-                        src={getTrailerEmbedUrl(animeTitle.trailer) ?? undefined}
-                        title={`${animeTitle.anime_name ?? 'Anime'} trailer`}
-                        className="absolute inset-0 h-full w-full border-0"
-                        allow="autoplay; encrypted-media; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  </section>
+            <div className="rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm sm:p-5">
+              <div className="grid gap-5 sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-6">
+                {animeTitle.anime_image && (
+                  <img
+                    src={animeTitle.anime_image}
+                    alt={`${animeTitle.anime_name ?? 'Anime'} poster`}
+                    onError={(event) => {
+                      event.currentTarget.src = '/placeholder.svg'
+                    }}
+                    className="mx-auto h-52 w-36 rounded-xl object-cover shadow-lg ring-1 ring-white/10 sm:mx-0 sm:h-56 sm:w-full"
+                  />
                 )}
+                <div className="min-w-0 self-center">
+                  <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+                    <span>Now watching</span>
+                    {selectedEpisode && <span className="text-muted-foreground">Episode {selectedEpisode}</span>}
+                  </div>
+                  <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{animeTitle.anime_name}</h1>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs sm:text-sm">
+                    {animeTitle.rating && <span className="rounded-full bg-primary/10 px-3 py-1.5 font-medium text-primary">Rating {animeTitle.rating}</span>}
+                    {animeTitle.airYear && <span className="rounded-full bg-muted px-3 py-1.5">{animeTitle.airYear}</span>}
+                    {animeTitle.status && <span className="rounded-full bg-muted px-3 py-1.5">{animeTitle.status}</span>}
+                    {animeTitle.studio && <span className="rounded-full bg-muted px-3 py-1.5">{animeTitle.studio}</span>}
+                    {animeTitle.genres && <span className="rounded-full bg-muted px-3 py-1.5">{animeTitle.genres}</span>}
+                  </div>
+                </div>
               </div>
+
+              {animeTitle.synopsis && (
+                <div className="mt-5 border-t border-border/70 pt-5">
+                  <h2 className="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Synopsis</h2>
+                  <p className="max-w-4xl text-sm leading-7 text-muted-foreground sm:text-base">{animeTitle.synopsis}</p>
+                </div>
+              )}
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 mb-3">
-            <div className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2">
-              <Play size={16} className="text-primary" />
-              <span className="text-sm text-muted-foreground">Now playing</span>
-              <span className="font-bold text-primary">
-                {selectedEpisode ? `Episode ${selectedEpisode}` : '—'}
-              </span>
-            </div>
-          </div>
-
-          {animeTitle?.synopsis && (
-            <p className="text-justify text-sm sm:text-base leading-7 text-muted-foreground">
-              {animeTitle.synopsis}
-            </p>
+          {animeTitle && getTrailerEmbedUrl(animeTitle.trailer) && (
+            <section className="rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm sm:p-5" aria-labelledby="trailer-heading">
+              <div className="mb-4 flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Preview</p>
+                  <h2 id="trailer-heading" className="mt-1 text-xl font-bold">Official trailer</h2>
+                </div>
+                <span className="hidden text-xs text-muted-foreground sm:block">Watch before you start</span>
+              </div>
+              <div className="relative mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-xl bg-black shadow-lg ring-1 ring-white/10">
+                <iframe
+                  src={getTrailerEmbedUrl(animeTitle.trailer) ?? undefined}
+                  title={`${animeTitle.anime_name ?? 'Anime'} trailer`}
+                  className="absolute inset-0 h-full w-full border-0"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </section>
           )}
         </section>
 
