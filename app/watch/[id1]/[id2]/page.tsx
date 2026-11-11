@@ -355,6 +355,21 @@ useEffect(() => {
               </div>
             )}
 
+            {url && /\/(sub|dub)(?=\/|$)/.test(url) && (
+              <button
+                type="button"
+                onClick={() => {
+                  const nextAudio = url.includes('/sub') ? 'dub' : 'sub'
+                  setUrl(url.replace(/\/(sub|dub)(?=\/|$)/, `/${nextAudio}`))
+                }}
+                aria-label={`Switch to ${url.includes('/sub') ? 'English dub' : 'Japanese sub'}`}
+                className="absolute right-3 top-3 z-20 rounded-full border border-white/20 bg-black/75 px-4 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              >
+                {url.includes('/sub') ? 'SUB' : 'DUB'}
+                <span className="ml-2 text-white/70">Switch</span>
+              </button>
+            )}
+
             {isSourceLoading && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/75 text-white">
                 <Loader size={34} className="animate-spin" />
